@@ -350,6 +350,71 @@
   .footer-pill.monte  { border-color: rgba(139,92,246,0.4); color: #c4b5fd; }
   .footer-pill.elo    { border-color: rgba(34,197,94,0.4);  color: #86efac; }
 
+  /* LOCKED MATCH */
+  .score-input.locked { opacity: 0.4; cursor: not-allowed; background: var(--bg2); border-color: rgba(255,255,255,0.04); pointer-events: none; }
+  .match-locked-badge { font-size: 10px; color: #ef4444; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
+  .match-row.locked-row { background: rgba(0,0,0,0.15); }
+
+  /* AUTH MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.82); backdrop-filter: blur(6px); z-index: 9998; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.hidden { display: none; }
+  .modal-box { background: var(--card); border: 1px solid rgba(245,200,66,0.3); border-radius: var(--radius-lg); padding: 2rem; width: 420px; max-width: 96vw; text-align: center; box-shadow: 0 28px 70px rgba(0,0,0,0.65); }
+  .modal-icon { font-size: 48px; margin-bottom: 8px; display: block; }
+  .modal-title { font-family: 'Oswald', sans-serif; font-size: 26px; color: var(--gold); }
+  .modal-sub { font-size: 13px; color: var(--text3); margin: 4px 0 1.25rem; }
+  .auth-tabs { display: flex; background: var(--bg3); border-radius: 9px; padding: 4px; margin-bottom: 1.25rem; gap: 4px; }
+  .auth-tab { flex: 1; padding: 9px; border: none; border-radius: 7px; background: transparent; color: var(--text2); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .auth-tab.active { background: var(--card); color: var(--gold); box-shadow: 0 1px 6px rgba(0,0,0,0.3); }
+  .auth-field { width: 100%; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-size: 15px; font-family: 'Inter', sans-serif; margin-bottom: 10px; transition: border-color .2s; }
+  .auth-field:focus { outline: none; border-color: var(--gold); }
+  .auth-error { color: var(--red); font-size: 12px; min-height: 18px; margin-bottom: 8px; text-align: left; padding-left: 2px; }
+  .auth-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #f5c842, #e8a800); color: #000; border: none; border-radius: 9px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .2s; }
+  .auth-btn:hover { opacity: .9; }
+  .auth-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .auth-note { font-size: 11px; color: var(--text3); margin-top: 12px; }
+  /* USER CHIP + MENU */
+  .user-chip-wrap { position: relative; }
+  .user-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(245,200,66,0.1); border: 1px solid rgba(245,200,66,0.3); border-radius: 20px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--gold); cursor: pointer; transition: background .2s; white-space: nowrap; }
+  .user-chip:hover { background: rgba(245,200,66,0.2); }
+  .user-menu { position: absolute; top: calc(100% + 6px); right: 0; background: var(--card); border: 1px solid var(--border2); border-radius: 10px; padding: 5px; min-width: 180px; z-index: 500; box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
+  .user-menu.hidden { display: none; }
+  .user-menu-item { padding: 9px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text2); display: flex; align-items: center; gap: 8px; transition: background .15s; }
+  .user-menu-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .user-menu-item.danger { color: #f87171; }
+  .user-menu-item.danger:hover { background: rgba(239,68,68,0.07); }
+
+  /* RANKING */
+  .ranking-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 10px; }
+  .ranking-header h2 { font-family: 'Oswald', sans-serif; font-size: 26px; color: var(--gold); }
+  .podium-wrap { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 0 auto 1.5rem; max-width: 500px; }
+  .podium-card { background: var(--card); border-radius: var(--radius-lg); padding: 14px 10px 16px; text-align: center; position: relative; flex: 1; min-width: 0; }
+  .podium-card.p1 { border: 1px solid var(--gold); background: linear-gradient(160deg, rgba(245,200,66,0.08), var(--card)); }
+  .podium-card.p2 { border: 1px solid rgba(192,192,192,0.35); }
+  .podium-card.p3 { border: 1px solid rgba(205,127,50,0.35); }
+  .podium-medal { font-size: 26px; display: block; margin-bottom: 4px; }
+  .podium-avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, var(--bg3), var(--bg4)); display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 4px auto 6px; border: 2px solid var(--border2); }
+  .podium-card.p1 .podium-avatar { border-color: var(--gold); }
+  .podium-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .podium-pts { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--gold); line-height: 1; margin-top: 4px; }
+  .podium-sub { font-size: 10px; color: var(--text3); margin-top: 3px; }
+  .rank-list-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 1.25rem; }
+  .rank-list-row { display: grid; grid-template-columns: 44px 1fr 70px 70px 70px; align-items: center; padding: 11px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+  .rank-list-row:last-child { border-bottom: none; }
+  .rank-list-row.hdr { background: var(--bg3); color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: .7px; font-weight: 600; }
+  .rank-list-row.me { background: rgba(245,200,66,0.05); border-left: 3px solid var(--gold); padding-left: 13px; }
+  .rank-pos-num { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text3); text-align: center; }
+  .rank-pos-num.top3 { color: var(--gold); }
+  .rank-pts-val { font-family: 'Oswald', sans-serif; font-size: 17px; color: var(--gold); text-align: center; }
+  .rank-prog-cell { display: flex; align-items: center; gap: 5px; }
+  .rank-prog-bar { flex: 1; height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .rank-prog-fill { height: 100%; background: var(--green); border-radius: 3px; }
+  .rank-empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
+  .legend-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: .75rem; }
+  .legend-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+  .actual-results-btn { padding: 7px 16px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); color: var(--green); border-radius: 7px; font-size: 12px; cursor: pointer; transition: all .2s; }
+  .actual-results-btn:hover { background: rgba(34,197,94,0.22); }
+  .admin-panel { background: var(--card); border: 1px solid rgba(34,197,94,0.25); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: none; }
+
   /* Responsive */
   @media (max-width: 640px) {
     .hero h1 { font-size: 28px; }
@@ -376,9 +441,24 @@
       <button class="nav-tab" onclick="showSection('probabilidades')">Probabilidades</button>
       <button class="nav-tab" onclick="showSection('chaveamento')">Chaveamento</button>
       <button class="nav-tab" onclick="showSection('analise')">Análise IA</button>
+      <button class="nav-tab" onclick="showSection('ranking')">🏆 Ranking</button>
       <button class="nav-tab" onclick="showSection('configuracoes')">⚙️ Config</button>
     </nav>
-    <div class="score-badge" id="total-score">Palpites: 0</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="user-chip-wrap">
+        <button class="user-chip" id="user-chip-btn" onclick="toggleUserMenu()">
+          <span id="user-chip-icon">👤</span>
+          <span id="user-chip-name">Entrar</span>
+          <span style="font-size:10px;opacity:.7">▾</span>
+        </button>
+        <div class="user-menu hidden" id="user-menu">
+          <div id="user-menu-name" style="padding:8px 12px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);margin-bottom:4px"></div>
+          <div class="user-menu-item" onclick="hideUserMenu();showAuthModal('login')">🔄 Trocar de conta</div>
+          <div class="user-menu-item danger" onclick="logoutUser()">🚪 Sair</div>
+        </div>
+      </div>
+      <div class="score-badge" id="total-score">Palpites: 0</div>
+    </div>
   </div>
 </header>
 
@@ -493,6 +573,64 @@
     </div>
   </section>
 
+  <!-- SECTION: RANKING -->
+  <section class="section" id="section-ranking">
+    <div class="ranking-header">
+      <h2>🏆 Ranking do Bolão</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="actual-results-btn" id="admin-toggle-btn" onclick="toggleAdminPanel()">🔑 Admin — Inserir Resultados</button>
+        <button class="rank-sync-btn" onclick="loadRanking()">🔄 Atualizar Ranking</button>
+      </div>
+    </div>
+
+    <!-- Admin panel: inserir resultados reais -->
+    <div class="admin-panel" id="admin-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-weight:600;font-size:14px;color:var(--green)">🔑 Painel Admin — Resultados Reais</span>
+        <input id="admin-pwd-input" type="password" placeholder="Senha admin" class="settings-input" style="width:160px;font-size:12px;padding:6px 10px" onkeydown="if(event.key==='Enter')verifyAdmin()">
+        <button onclick="verifyAdmin()" style="padding:6px 12px;background:var(--green);color:#000;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;margin-left:6px">OK</button>
+      </div>
+      <div id="admin-results-area" style="display:none">
+        <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Insira os placares reais abaixo. Cada campo: "grupo_t1vt2 = gols1-gols2" (ex: A_mexvrsa = 1-0). Ou cole todos no formato JSON.</p>
+        <textarea id="admin-results-json" class="settings-input" rows="6" placeholder='{"A_mexvrsa":{"g1":1,"g2":0},"A_korvscz":{"g1":2,"g2":1}}'
+          style="font-size:12px;resize:vertical;font-family:monospace"></textarea>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button onclick="saveActualResults()" class="settings-save-btn" style="font-size:12px;padding:7px 16px">💾 Salvar Resultados</button>
+          <button onclick="loadActualResultsToAdmin()" class="api-test-btn">📥 Carregar do Firebase</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pódio top 3 -->
+    <div class="podium-wrap" id="ranking-podium">
+      <div class="rank-empty" style="width:100%">Carregando ranking... clique em 🔄 Atualizar.</div>
+    </div>
+
+    <!-- Tabela completa -->
+    <div class="rank-list-wrap">
+      <div class="rank-list-row hdr">
+        <div style="text-align:center">#</div>
+        <div>Participante</div>
+        <div style="text-align:center">Pts</div>
+        <div style="text-align:center">Palpites</div>
+        <div style="text-align:center">Exatos</div>
+      </div>
+      <div id="ranking-rows"><div class="rank-empty">Nenhum participante ainda.</div></div>
+    </div>
+
+    <!-- Legenda de pontuação -->
+    <div class="legend-row">
+      <span class="legend-pill">⚽ Placar exato = <strong style="color:var(--gold)">10 pts</strong></span>
+      <span class="legend-pill">✅ Resultado certo (V/E/D) = <strong style="color:var(--cyan)">3 pts</strong></span>
+      <span class="legend-pill">❌ Errado = 0 pts</span>
+    </div>
+
+    <!-- Info Firebase -->
+    <div style="margin-top:1.25rem;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text3)">
+      💡 O ranking sincroniza via <strong style="color:var(--text2)">Firebase Realtime Database</strong>. Configure a URL do Firebase em <button onclick="showSection('configuracoes')" style="background:transparent;border:none;color:var(--gold);cursor:pointer;font-size:12px;text-decoration:underline;padding:0">⚙️ Configurações</button>.
+    </div>
+  </section>
+
   <!-- SECTION: CONFIGURAÇÕES -->
   <section class="section" id="section-configuracoes">
     <div class="settings-section">
@@ -534,10 +672,54 @@
         </div>
       </div>
 
+      <!-- Conta do usuário -->
+      <div class="settings-card">
+        <h3>👤 Minha Conta</h3>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Logado como: <strong id="settings-logged-as" style="color:var(--gold)">—</strong></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="settings-save-btn" style="font-size:12px;padding:8px 16px" onclick="hideUserMenu();showAuthModal('login')">🔄 Trocar conta</button>
+          <button class="api-test-btn" onclick="logoutUser()">🚪 Sair</button>
+        </div>
+      </div>
+
+      <!-- Seção do Organizador (colapsável) -->
+      <div class="settings-card">
+        <h3 style="cursor:pointer" onclick="toggleOrgSection()">🔧 Configurações do Organizador <span id="org-toggle-arrow" style="font-size:12px;opacity:.6">▼</span></h3>
+        <div id="org-section" style="display:none;margin-top:12px">
+          <p style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.7;background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.2);border-radius:7px;padding:10px">
+            ⚙️ Esta seção é para o <strong style="color:var(--gold)">organizador do bolão</strong>. Configure uma vez e publique — os outros participantes não precisam mexer aqui.
+          </p>
+          <div class="settings-row">
+            <label>Firebase Database URL <span>Hardcode no código para funcionar para todos</span></label>
+            <input class="settings-input" type="url" id="firebase-url-input"
+              placeholder="https://SEU-PROJETO.firebaseio.com">
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">💡 Prefira editar a constante <code style="background:var(--bg3);padding:1px 5px;border-radius:3px">BOLAO_DB_URL</code> no topo do JS antes de publicar.</div>
+          </div>
+          <div class="settings-row">
+            <label>Senha do Administrador <span>Para inserir resultados reais</span></label>
+            <input class="settings-input" type="password" id="admin-pwd-settings"
+              placeholder="Deixe em branco para manter a atual" autocomplete="new-password">
+          </div>
+          <button class="settings-save-btn" onclick="saveSettings()">💾 Salvar</button>
+        </div>
+      </div>
+
       <!-- Status atual -->
       <div class="settings-card" id="settings-current-card">
         <h3>📋 Status da Configuração</h3>
         <div id="settings-info" style="font-size:14px;color:var(--text2);line-height:1.8"></div>
+      </div>
+
+      <!-- Instruções Firebase -->
+      <div class="settings-card">
+        <h3>🔥 Como configurar o Firebase</h3>
+        <ol style="color:var(--text2);font-size:13px;line-height:2;padding-left:1.2rem">
+          <li>Acesse <strong style="color:var(--gold)">console.firebase.google.com</strong></li>
+          <li>Crie um projeto → <strong>Realtime Database</strong> → Criar banco</li>
+          <li>Em <strong>Regras</strong>, defina: <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">".read": true, ".write": true</code></li>
+          <li>Copie a URL do banco (termina em <code style="background:var(--bg3);padding:2px 6px;border-radius:4px">.firebaseio.com</code>)</li>
+          <li>Cole acima e salve. Todos os participantes usam a mesma URL.</li>
+        </ol>
       </div>
 
       <!-- Instruções -->
@@ -558,6 +740,34 @@
 </main>
 
 <div id="notif-container"></div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay hidden" id="auth-modal">
+  <div class="modal-box">
+    <span class="modal-icon">⚽</span>
+    <div class="modal-title">Bolão Copa 2026</div>
+    <div class="modal-sub">Entre ou crie sua conta para participar</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Criar Conta</button>
+    </div>
+
+    <input class="auth-field" type="text" id="auth-name"
+      placeholder="Seu nome" maxlength="30" autocomplete="off"
+      onkeydown="if(event.key==='Enter')document.getElementById('auth-password').focus()">
+    <input class="auth-field" type="password" id="auth-password"
+      placeholder="Senha" maxlength="30"
+      onkeydown="if(event.key==='Enter'&&currentAuthTab==='login')submitAuth();else if(event.key==='Enter')document.getElementById('auth-confirm-pwd').focus()">
+    <input class="auth-field" type="password" id="auth-confirm-pwd"
+      placeholder="Confirmar senha" maxlength="30" style="display:none"
+      onkeydown="if(event.key==='Enter')submitAuth()">
+
+    <div class="auth-error" id="auth-error"></div>
+    <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">Entrar →</button>
+    <div class="auth-note">🔒 Seus dados ficam seguros. Somente nome e senha são armazenados.</div>
+  </div>
+</div>
 
 <footer class="site-footer">
   <div class="footer-inner">
@@ -731,12 +941,34 @@ const GROUPS = {
   }
 };
 
+// =====================================================================
+// CONFIGURAÇÃO DO ORGANIZADOR — edite antes de publicar no Vercel
+// =====================================================================
+const BOLAO_DB_URL    = 'https://bolao-copa-2026-9be4f-default-rtdb.firebaseio.com'; // ← Cole URL do Firebase: 'https://meu-bolao.firebaseio.com'
+const BOLAO_ADMIN_PWD = 'Eury2502$'; // ← Troque pela senha do administrador
+
+// =====================================================================
+// MATCH LOCK DATES — Copa do Mundo 2026
+// Matchday 1: Jun 11-14 | Matchday 2: Jun 19-22 | Matchday 3: Jun 25-28
+// =====================================================================
+const MATCHDAY_LOCK = [
+  new Date('2026-06-11T12:00:00'), // matchday 1 (match indices 0,1)
+  new Date('2026-06-19T12:00:00'), // matchday 2 (match indices 2,3)
+  new Date('2026-06-25T12:00:00'), // matchday 3 (match indices 4,5)
+];
+
+function isMatchLocked(matchIndex) {
+  const day = matchIndex < 2 ? 0 : matchIndex < 4 ? 1 : 2;
+  return new Date() >= MATCHDAY_LOCK[day];
+}
+
 // State
 const scores = {}; // key: "groupX_t1vt2" => {g1, g2}
 const standings = {}; // computed from scores
 let bracketData = {}; // bracket state
 let monteResults = null;
 let aiAnalysisCache = {};
+let syncDebounceTimer = null;
 
 // =====================================================================
 // UTILS
@@ -763,6 +995,7 @@ function showSection(name) {
   if (name === 'analise') { renderAnalysisSummary(); renderRankings(); }
   if (name === 'chaveamento') { renderBracket(); }
   if (name === 'configuracoes') { loadSettingsUI(); }
+  if (name === 'ranking') { loadRanking(); }
 }
 
 function getTeamById(id) {
@@ -867,32 +1100,39 @@ function renderMatchRow(group, t1id, t2id, mi) {
   const t2 = GROUPS[group].teams.find(t => t.id === t2id);
   const key = `${group}_${t1id}v${t2id}`;
   const sc = scores[key] || {};
-  const r = getRoundDate(mi);
+  const locked = isMatchLocked(mi);
+  const { label, dateStr } = getRoundInfo(mi);
+  const lockedAttr = locked ? ' disabled class="score-input locked"' : ' class="score-input"';
+  const lockBadge = locked ? '<span class="match-locked-badge">🔒 Encerrado</span>' : `<span class="match-date">${dateStr}</span>`;
   return `
-    <div class="match-row">
+    <div class="match-row${locked ? ' locked-row' : ''}">
       <div class="match-teams">
         <span>${t1.flag}</span>
         <span style="font-weight:500">${t1.name}</span>
       </div>
       <div class="match-score-inputs">
-        <input class="score-input" type="number" min="0" max="20" value="${sc.g1??''}" placeholder="—"
+        <input${lockedAttr} type="number" min="0" max="20" value="${sc.g1??''}" placeholder="—"
           oninput="setScore('${key}','g1',this.value)" id="sc_${key}_1">
         <span class="score-sep">×</span>
-        <input class="score-input" type="number" min="0" max="20" value="${sc.g2??''}" placeholder="—"
+        <input${lockedAttr} type="number" min="0" max="20" value="${sc.g2??''}" placeholder="—"
           oninput="setScore('${key}','g2',this.value)" id="sc_${key}_2">
       </div>
       <div class="match-teams" style="justify-content:flex-end">
         <span style="font-weight:500">${t2.name}</span>
         <span>${t2.flag}</span>
       </div>
-      <div class="match-date">${r}</div>
+      ${lockBadge}
     </div>`;
 }
 
+function getRoundInfo(mi) {
+  if (mi < 2) return { label: '1ª Rodada', dateStr: '11–14 Jun' };
+  if (mi < 4) return { label: '2ª Rodada', dateStr: '19–22 Jun' };
+  return { label: '3ª Rodada', dateStr: '25–28 Jun' };
+}
+
 function getRoundDate(mi) {
-  if (mi < 2) return '1ª Rodada';
-  if (mi < 4) return '2ª Rodada';
-  return '3ª Rodada';
+  return getRoundInfo(mi).label;
 }
 
 function toggleMatches(letter) {
@@ -910,10 +1150,13 @@ function toggleMatches(letter) {
 function setScore(key, side, val) {
   if (!scores[key]) scores[key] = {};
   scores[key][side] = val === '' ? null : Math.max(0, Math.min(20, parseInt(val)||0));
-  // Extract group from key
   const group = key.split('_')[0];
   updateGroupStandings(group);
   updateProgress();
+  saveLocalScores();
+  // debounce Firebase sync: 3s after last keystroke
+  clearTimeout(syncDebounceTimer);
+  syncDebounceTimer = setTimeout(() => syncPredictionsToFirebase(), 3000);
 }
 
 // =====================================================================
@@ -1323,6 +1566,382 @@ function renderRankings() {
 }
 
 // =====================================================================
+// LOCAL STORAGE — Persist scores
+// =====================================================================
+function saveLocalScores() {
+  try {
+    localStorage.setItem('bolao_scores', JSON.stringify(scores));
+  } catch(e) {}
+}
+
+function loadLocalScores() {
+  try {
+    const saved = localStorage.getItem('bolao_scores');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      Object.assign(scores, parsed);
+    }
+  } catch(e) {}
+}
+
+// =====================================================================
+// AUTH — Register & Login
+// =====================================================================
+let currentAuthTab = 'login';
+
+function getFirebaseUrl() {
+  return BOLAO_DB_URL || localStorage.getItem('firebase_url') || '';
+}
+
+function getUsername() {
+  return localStorage.getItem('bolao_username') || '';
+}
+
+function toSafeKey(name) {
+  return name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]/g, '_').replace(/__+/g, '_').substring(0, 40);
+}
+
+function showAuthModal(tab = 'login') {
+  const modal = document.getElementById('auth-modal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  switchAuthTab(tab);
+  setTimeout(() => document.getElementById('auth-name')?.focus(), 120);
+}
+
+function hideAuthModal() {
+  document.getElementById('auth-modal')?.classList.add('hidden');
+}
+
+function switchAuthTab(tab) {
+  currentAuthTab = tab;
+  document.getElementById('tab-login')?.classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register')?.classList.toggle('active', tab === 'register');
+  const confirmEl = document.getElementById('auth-confirm-pwd');
+  if (confirmEl) confirmEl.style.display = tab === 'register' ? 'block' : 'none';
+  const btn = document.getElementById('auth-submit-btn');
+  if (btn) btn.textContent = tab === 'login' ? 'Entrar →' : 'Criar Conta →';
+  const pwdEl = document.getElementById('auth-password');
+  if (pwdEl) pwdEl.placeholder = tab === 'login' ? 'Senha' : 'Crie uma senha';
+  const errEl = document.getElementById('auth-error');
+  if (errEl) errEl.textContent = '';
+}
+
+async function submitAuth() {
+  const name    = document.getElementById('auth-name')?.value.trim() || '';
+  const pwd     = document.getElementById('auth-password')?.value || '';
+  const confirm = document.getElementById('auth-confirm-pwd')?.value || '';
+  const errEl   = document.getElementById('auth-error');
+  const btn     = document.getElementById('auth-submit-btn');
+  if (errEl) errEl.textContent = '';
+
+  if (!name) { if (errEl) errEl.textContent = 'Digite seu nome.'; return; }
+  if (!pwd)  { if (errEl) errEl.textContent = 'Digite uma senha.'; return; }
+
+  if (currentAuthTab === 'register') {
+    if (pwd.length < 4) { if (errEl) errEl.textContent = 'Senha deve ter ao menos 4 caracteres.'; return; }
+    if (pwd !== confirm) { if (errEl) errEl.textContent = 'As senhas não coincidem.'; return; }
+    btn.textContent = '⏳ Verificando...'; btn.disabled = true;
+    const r = await registerUser(name, pwd);
+    btn.disabled = false;
+    if (!r.success) { if (errEl) errEl.textContent = r.error; btn.textContent = 'Criar Conta →'; return; }
+  } else {
+    btn.textContent = '⏳ Entrando...'; btn.disabled = true;
+    const r = await loginUser(name, pwd);
+    btn.disabled = false;
+    if (!r.success) { if (errEl) errEl.textContent = r.error; btn.textContent = 'Entrar →'; return; }
+  }
+  onAuthSuccess(name, pwd);
+}
+
+async function registerUser(name, pwd) {
+  const fbUrl   = getFirebaseUrl();
+  const safeKey = toSafeKey(name);
+  if (!fbUrl) return { success: true }; // sem Firebase: aceita sem checagem de duplicata
+  try {
+    const res = await fetch(`${fbUrl}/users/${safeKey}.json`);
+    const existing = await res.json();
+    if (existing) return { success: false, error: `"${name}" já está em uso. Escolha outro nome.` };
+    await fetch(`${fbUrl}/users/${safeKey}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, pwd: btoa(encodeURIComponent(pwd)), registeredAt: new Date().toISOString() })
+    });
+    return { success: true };
+  } catch(e) {
+    return { success: false, error: `Erro de conexão: ${e.message}` };
+  }
+}
+
+async function loginUser(name, pwd) {
+  const fbUrl   = getFirebaseUrl();
+  const safeKey = toSafeKey(name);
+  if (!fbUrl) {
+    try {
+      const s = localStorage.getItem('bolao_session') || '';
+      if (s && decodeURIComponent(atob(s)) === name + ':' + pwd) return { success: true };
+    } catch(e) {}
+    return { success: false, error: 'Credenciais inválidas.' };
+  }
+  try {
+    const res  = await fetch(`${fbUrl}/users/${safeKey}.json`);
+    const user = await res.json();
+    if (!user) return { success: false, error: 'Usuário não encontrado. Crie uma conta.' };
+    if (decodeURIComponent(atob(user.pwd)) !== pwd) return { success: false, error: 'Senha incorreta.' };
+    return { success: true };
+  } catch(e) {
+    return { success: false, error: `Erro de conexão: ${e.message}` };
+  }
+}
+
+function onAuthSuccess(name, pwd) {
+  localStorage.setItem('bolao_username', name);
+  localStorage.setItem('bolao_session', btoa(encodeURIComponent(name + ':' + pwd)));
+  updateUserChip(name);
+  hideAuthModal();
+  notify(`👋 Bem-vindo, ${name}!`, 'gold');
+  syncPredictionsToFirebase();
+}
+
+function logoutUser() {
+  if (!confirm('Sair da conta?')) return;
+  localStorage.removeItem('bolao_username');
+  localStorage.removeItem('bolao_session');
+  updateUserChip('');
+  hideUserMenu();
+  notify('👋 Até logo!', '');
+  setTimeout(() => showAuthModal('login'), 500);
+}
+
+function updateUserChip(name) {
+  const chipName = document.getElementById('user-chip-name');
+  if (chipName) chipName.textContent = name || 'Entrar';
+  const menuName = document.getElementById('user-menu-name');
+  if (menuName) menuName.textContent = name ? `Olá, ${name}` : '';
+  const loggedAs = document.getElementById('settings-logged-as');
+  if (loggedAs) loggedAs.textContent = name || 'Não logado';
+}
+
+function toggleUserMenu() {
+  const name = getUsername();
+  if (!name) { showAuthModal('login'); return; }
+  const menu = document.getElementById('user-menu');
+  if (menu) menu.classList.toggle('hidden');
+}
+
+function hideUserMenu() {
+  document.getElementById('user-menu')?.classList.add('hidden');
+}
+
+function toggleOrgSection() {
+  const sec = document.getElementById('org-section');
+  const arrow = document.getElementById('org-toggle-arrow');
+  if (!sec) return;
+  const open = sec.style.display !== 'none';
+  sec.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = open ? '▼' : '▲';
+}
+
+// close menu on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('#user-chip-btn') && !e.target.closest('#user-menu')) hideUserMenu();
+});
+
+async function syncPredictionsToFirebase() {
+  const fbUrl = getFirebaseUrl();
+  const username = getUsername();
+  if (!fbUrl || !username) return;
+
+  const safeKey = username.replace(/[.#$[\]]/g, '_');
+  const payload = {
+    name: username,
+    scores: scores,
+    updatedAt: new Date().toISOString()
+  };
+
+  try {
+    await fetch(`${fbUrl}/predictions/${safeKey}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    console.warn('Firebase sync error:', e.message);
+  }
+}
+
+async function loadRanking() {
+  const fbUrl = getFirebaseUrl();
+  const podium = document.getElementById('ranking-podium');
+  const rows = document.getElementById('ranking-rows');
+  const myUsername = getUsername();
+
+  if (!fbUrl) {
+    if (podium) podium.innerHTML = `<div class="rank-empty">⚠️ Configure a URL do Firebase em <button onclick="showSection('configuracoes')" style="background:transparent;border:none;color:var(--gold);cursor:pointer;text-decoration:underline">⚙️ Configurações</button> para ver o ranking compartilhado.</div>`;
+    if (rows) rows.innerHTML = '';
+    return;
+  }
+
+  if (podium) podium.innerHTML = `<div class="rank-empty" style="width:100%">⏳ Carregando ranking...</div>`;
+
+  try {
+    const [predRes, actualRes] = await Promise.all([
+      fetch(`${fbUrl}/predictions.json`),
+      fetch(`${fbUrl}/actualResults.json`)
+    ]);
+
+    const predictions = predRes.ok ? (await predRes.json() || {}) : {};
+    const actualResults = actualRes.ok ? (await actualRes.json() || {}) : {};
+
+    const users = Object.values(predictions).map(u => ({
+      name: u.name || '?',
+      scores: u.scores || {},
+      updatedAt: u.updatedAt || '',
+      ...calculatePoints(u.scores || {}, actualResults)
+    }));
+
+    users.sort((a, b) => b.points - a.points || b.exact - a.exact || b.filled - a.filled);
+    renderRankingTable(users, myUsername, actualResults);
+
+  } catch(e) {
+    if (podium) podium.innerHTML = `<div class="rank-empty" style="width:100%">❌ Erro ao carregar: ${e.message}</div>`;
+    if (rows) rows.innerHTML = '';
+  }
+}
+
+function calculatePoints(userScores, actualResults) {
+  let points = 0, exact = 0, correct = 0;
+  let filled = Object.values(userScores).filter(s => s.g1 !== null && s.g1 !== undefined && s.g2 !== null && s.g2 !== undefined).length;
+
+  for (const [key, actual] of Object.entries(actualResults || {})) {
+    const pred = userScores[key];
+    if (!pred || pred.g1 === null || pred.g1 === undefined) continue;
+    const pg1 = parseInt(pred.g1), pg2 = parseInt(pred.g2);
+    const ag1 = parseInt(actual.g1), ag2 = parseInt(actual.g2);
+    if (pg1 === ag1 && pg2 === ag2) { points += 10; exact++; }
+    else if (Math.sign(pg1 - pg2) === Math.sign(ag1 - ag2)) { points += 3; correct++; }
+  }
+  return { points, exact, correct, filled };
+}
+
+function renderRankingTable(users, myUsername, actualResults) {
+  const podium = document.getElementById('ranking-podium');
+  const rows = document.getElementById('ranking-rows');
+  const medals = ['🥇', '🥈', '🥉'];
+  const totalMatches = 72; // group stage
+
+  const hasResults = Object.keys(actualResults || {}).length > 0;
+
+  // Podium top 3
+  if (users.length === 0) {
+    if (podium) podium.innerHTML = `<div class="rank-empty" style="width:100%">Nenhum participante ainda. Seja o primeiro!</div>`;
+    if (rows) rows.innerHTML = '';
+    return;
+  }
+
+  const podiumCards = users.slice(0, 3);
+  // reorder for visual: 2nd, 1st, 3rd
+  const order = podiumCards.length >= 3
+    ? [podiumCards[1], podiumCards[0], podiumCards[2]]
+    : podiumCards.length === 2
+      ? [podiumCards[1], podiumCards[0]]
+      : [podiumCards[0]];
+
+  const podiumClasses = podiumCards.length >= 3 ? ['p2','p1','p3'] : podiumCards.length === 2 ? ['p2','p1'] : ['p1'];
+  const podiumMedals = podiumCards.length >= 3 ? ['🥈','🥇','🥉'] : podiumCards.length === 2 ? ['🥈','🥇'] : ['🥇'];
+  const podiumOrigIdx = podiumCards.length >= 3 ? [1,0,2] : podiumCards.length === 2 ? [1,0] : [0];
+
+  if (podium) podium.innerHTML = order.map((u, vi) => {
+    const cls = podiumClasses[vi];
+    const medal = podiumMedals[vi];
+    const initials = u.name.substring(0,2).toUpperCase();
+    return `<div class="podium-card ${cls}" ${u.name === myUsername ? 'style="box-shadow:0 0 16px rgba(245,200,66,0.25)"' : ''}>
+      <span class="podium-medal">${medal}</span>
+      <div class="podium-avatar">${initials}</div>
+      <div class="podium-name">${u.name}</div>
+      <div class="podium-pts">${u.points}</div>
+      <div class="podium-sub">${hasResults ? `${u.exact} exatos · ${u.correct} corretos` : `${u.filled}/${totalMatches} palpites`}</div>
+    </div>`;
+  }).join('');
+
+  // Full table
+  if (rows) rows.innerHTML = users.map((u, i) => {
+    const isMe = u.name === myUsername;
+    const prog = Math.min(100, Math.round(u.filled / totalMatches * 100));
+    return `<div class="rank-list-row${isMe ? ' me' : ''}">
+      <div class="rank-pos-num ${i < 3 ? 'top3' : ''}">${medals[i] || (i + 1)}</div>
+      <div style="font-weight:${isMe ? '700' : '500'}">${u.name}${isMe ? ' <span style="font-size:10px;color:var(--gold)">(você)</span>' : ''}</div>
+      <div class="rank-pts-val">${u.points}</div>
+      <div>
+        <div class="rank-prog-cell">
+          <div class="rank-prog-bar"><div class="rank-prog-fill" style="width:${prog}%"></div></div>
+          <span style="font-size:11px;color:var(--text3);width:36px;text-align:right">${u.filled}/${totalMatches}</span>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:13px;color:var(--cyan)">${u.exact}</div>
+    </div>`;
+  }).join('');
+}
+
+// =====================================================================
+// ADMIN — Actual Results
+// =====================================================================
+let adminUnlocked = false;
+
+function toggleAdminPanel() {
+  const panel = document.getElementById('admin-panel');
+  if (!panel) return;
+  panel.style.display = panel.style.display === 'none' || !panel.style.display ? 'block' : 'none';
+}
+
+function verifyAdmin() {
+  const input = document.getElementById('admin-pwd-input')?.value || '';
+  const stored = BOLAO_ADMIN_PWD || localStorage.getItem('admin_pwd') || '';
+  if (!stored) { notify('⚠️ Defina BOLAO_ADMIN_PWD no código ou em ⚙️ Config.', ''); return; }
+  if (input === stored) {
+    adminUnlocked = true;
+    document.getElementById('admin-results-area').style.display = 'block';
+    document.getElementById('admin-pwd-input').style.display = 'none';
+    notify('🔑 Modo admin ativado!', 'gold');
+    loadActualResultsToAdmin();
+  } else {
+    notify('❌ Senha incorreta.', '');
+  }
+}
+
+async function loadActualResultsToAdmin() {
+  const fbUrl = getFirebaseUrl();
+  if (!fbUrl) return;
+  try {
+    const res = await fetch(`${fbUrl}/actualResults.json`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data) document.getElementById('admin-results-json').value = JSON.stringify(data, null, 2);
+    }
+  } catch(e) {}
+}
+
+async function saveActualResults() {
+  const fbUrl = getFirebaseUrl();
+  if (!fbUrl) { notify('⚠️ Configure o Firebase primeiro.', ''); return; }
+  const raw = document.getElementById('admin-results-json')?.value || '';
+  let parsed;
+  try { parsed = JSON.parse(raw); } catch(e) { notify('❌ JSON inválido. Verifique o formato.', ''); return; }
+  try {
+    const res = await fetch(`${fbUrl}/actualResults.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(parsed)
+    });
+    if (res.ok) { notify('✅ Resultados salvos! Ranking atualizado.', 'gold'); loadRanking(); }
+    else notify('❌ Erro ao salvar no Firebase.', '');
+  } catch(e) {
+    notify(`❌ ${e.message}`, '');
+  }
+}
+
+// =====================================================================
 // SETTINGS — Gemini API Key & Model
 // =====================================================================
 function getGeminiKey() {
@@ -1334,55 +1953,58 @@ function getGeminiModel() {
 }
 
 function saveSettings() {
-  const key = document.getElementById('gemini-key-input').value.trim();
-  const model = document.getElementById('gemini-model-select').value;
-  if (!key) { notify('⚠️ Insira a chave de API antes de salvar.', ''); return; }
-  localStorage.setItem('gemini_api_key', key);
+  const key      = document.getElementById('gemini-key-input')?.value.trim() || '';
+  const model    = document.getElementById('gemini-model-select')?.value || 'gemini-2.0-flash';
+  const fbUrl    = document.getElementById('firebase-url-input')?.value.trim().replace(/\/$/, '') || '';
+  const adminPwd = document.getElementById('admin-pwd-settings')?.value || '';
+
+  if (key)      localStorage.setItem('gemini_api_key', key);
   localStorage.setItem('gemini_model', model);
+  if (fbUrl)    localStorage.setItem('firebase_url', fbUrl);
+  if (adminPwd) localStorage.setItem('admin_pwd', adminPwd);
+
   notify('✅ Configurações salvas!', 'gold');
   loadSettingsUI();
 }
 
 function loadSettingsUI() {
-  const key = getGeminiKey();
+  const key   = getGeminiKey();
   const model = getGeminiModel();
+  const fbUrl = BOLAO_DB_URL || localStorage.getItem('firebase_url') || '';
+  const uname = getUsername();
 
-  const keyInput = document.getElementById('gemini-key-input');
+  const keyInput    = document.getElementById('gemini-key-input');
   const modelSelect = document.getElementById('gemini-model-select');
-  const keyPreview = document.getElementById('key-preview');
-  const badge = document.getElementById('model-active-badge');
-  const badgeName = document.getElementById('model-active-name');
-  const info = document.getElementById('settings-info');
+  const keyPreview  = document.getElementById('key-preview');
+  const badge       = document.getElementById('model-active-badge');
+  const badgeName   = document.getElementById('model-active-name');
+  const info        = document.getElementById('settings-info');
+  const fbInput     = document.getElementById('firebase-url-input');
+  const loggedAs    = document.getElementById('settings-logged-as');
 
-  if (keyInput && key) keyInput.value = key;
-  if (modelSelect) modelSelect.value = model;
+  if (keyInput && key)     keyInput.value = key;
+  if (modelSelect)         modelSelect.value = model;
+  if (fbInput && fbUrl)    fbInput.value = fbUrl;
+  if (loggedAs)            loggedAs.textContent = uname || 'Não logado';
 
-  if (keyPreview) {
-    keyPreview.textContent = key
-      ? `Chave atual: ${key.substring(0,8)}${'•'.repeat(10)}${key.slice(-4)}`
-      : 'Nenhuma chave configurada.';
-  }
-
+  if (keyPreview) keyPreview.textContent = key
+    ? `Chave: ${key.substring(0,8)}${'•'.repeat(10)}${key.slice(-4)}`
+    : 'Nenhuma chave configurada.';
   if (badge && badgeName) {
-    if (key) {
-      badge.style.display = 'inline-flex';
-      badgeName.textContent = model;
-    } else {
-      badge.style.display = 'none';
-    }
+    badge.style.display = key ? 'inline-flex' : 'none';
+    badgeName.textContent = model;
   }
-
   if (info) {
-    if (key) {
-      info.innerHTML = `
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div>✅ <strong>API Gemini:</strong> Configurada (<code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">${key.substring(0,8)}...${key.slice(-4)}</code>)</div>
-          <div>🤖 <strong>Modelo ativo:</strong> <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:12px">${model}</code></div>
-          <div>🔒 <strong>Armazenamento:</strong> Apenas no seu navegador (localStorage)</div>
-        </div>`;
-    } else {
-      info.innerHTML = `<div style="color:var(--red)">⚠️ Nenhuma chave API configurada. A análise com IA não funcionará até você salvar uma chave Gemini válida.</div>`;
-    }
+    info.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div>${uname ? '✅' : '⚠️'} <strong>Conta:</strong> ${uname || '<span style="color:var(--red)">Não logado</span>'}</div>
+        <div>${fbUrl ? '✅' : '⚠️'} <strong>Firebase:</strong> ${fbUrl
+          ? `<code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:11px">${fbUrl}</code>`
+          : '<span style="color:var(--orange)">Não configurado — ranking funciona apenas localmente</span>'}</div>
+        <div>${key ? '✅' : '⚠️'} <strong>Gemini:</strong> ${key
+          ? `configurada · <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:11px">${model}</code>`
+          : '<span style="color:var(--red)">Não configurada</span>'}</div>
+      </div>`;
   }
 }
 
@@ -1585,12 +2207,15 @@ Forças, fraquezas, histórico recente e rota provável no torneio. 3 parágrafo
 // INIT
 // =====================================================================
 function init() {
+  // 1. Restore scores from localStorage BEFORE rendering
+  loadLocalScores();
+
   renderGroups();
   calcAllStandings();
   updateProgress();
   renderBracket();
 
-  // Pre-load saved settings into the settings UI
+  // 2. Restore settings UI
   const savedKey = getGeminiKey();
   const savedModel = getGeminiModel();
   const keyInput = document.getElementById('gemini-key-input');
@@ -1599,6 +2224,18 @@ function init() {
   if (modelSelect && savedModel) modelSelect.value = savedModel;
   updateKeyPreview();
   loadSettingsUI();
+
+  // 3. Restore session or show auth modal
+  const savedName = getUsername();
+  const session   = localStorage.getItem('bolao_session');
+  if (savedName && session) {
+    updateUserChip(savedName);
+  } else {
+    localStorage.removeItem('bolao_username');
+    localStorage.removeItem('bolao_session');
+    updateUserChip('');
+    setTimeout(() => showAuthModal('login'), 700);
+  }
 }
 
 window.addEventListener('load', init);
