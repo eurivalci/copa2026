@@ -430,6 +430,9 @@
   /* CHANGE PASSWORD */
   .pwd-form { display: flex; flex-direction: column; gap: 10px; }
 
+  /* ACTUAL SCORE */
+  .score-actual-num { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold); min-width: 22px; text-align: center; }
+
   /* MOBILE BOTTOM NAV */
   .mobile-nav {
     display: none;
@@ -1083,35 +1086,47 @@ const BOLAO_ADMIN_USER = 'EuryDuartePin';    // ← nome de usuário do administ
 const BOLAO_ADMIN_PWD  = 'c33339b0bd56fb3aecce652307b91c95fc50e2294e7a7a8329bfe259969235f7'; // ← hash SHA-256 da senha
 
 // =====================================================================
-// MATCH LOCK DATES — Copa do Mundo 2026 (por grupo)
-// Cada grupo tem 3 datas: [1ª Rodada, 2ª Rodada, 3ª Rodada]
-// Ajuste os horários conforme a tabela oficial da FIFA
+// MATCH LOCK DATES — Copa do Mundo 2026
+// 6 horários por grupo: [jogo0, jogo1, jogo2, jogo3, jogo4, jogo5]
+// Horários no fuso horário local. Ajuste conforme tabela oficial FIFA.
 // =====================================================================
 const GROUP_LOCK_DATES = {
-  A: ['2026-06-11T12:00:00', '2026-06-19T12:00:00', '2026-06-27T12:00:00'],
-  B: ['2026-06-12T12:00:00', '2026-06-20T12:00:00', '2026-06-28T12:00:00'],
-  C: ['2026-06-12T12:00:00', '2026-06-20T12:00:00', '2026-06-28T12:00:00'],
-  D: ['2026-06-13T12:00:00', '2026-06-21T12:00:00', '2026-06-29T12:00:00'],
-  E: ['2026-06-13T12:00:00', '2026-06-21T12:00:00', '2026-06-29T12:00:00'],
-  F: ['2026-06-14T12:00:00', '2026-06-22T12:00:00', '2026-06-30T12:00:00'],
-  G: ['2026-06-14T12:00:00', '2026-06-22T12:00:00', '2026-06-30T12:00:00'],
-  H: ['2026-06-15T12:00:00', '2026-06-23T12:00:00', '2026-07-01T12:00:00'],
-  I: ['2026-06-15T12:00:00', '2026-06-23T12:00:00', '2026-07-01T12:00:00'],
-  J: ['2026-06-16T12:00:00', '2026-06-24T12:00:00', '2026-07-02T12:00:00'],
-  K: ['2026-06-16T12:00:00', '2026-06-24T12:00:00', '2026-07-02T12:00:00'],
-  L: ['2026-06-17T12:00:00', '2026-06-25T12:00:00', '2026-07-02T12:00:00'],
+  // Grupo A — 11 Jun (jogo 0: 16h, jogo 1: 22h)
+  A: ['2026-06-11T16:00:00','2026-06-11T22:00:00','2026-06-19T12:00:00','2026-06-19T16:00:00','2026-06-27T16:00:00','2026-06-27T16:00:00'],
+  // Grupo B — 12 Jun
+  B: ['2026-06-12T12:00:00','2026-06-12T16:00:00','2026-06-20T12:00:00','2026-06-20T16:00:00','2026-06-28T16:00:00','2026-06-28T16:00:00'],
+  // Grupo C — 12 Jun
+  C: ['2026-06-12T18:00:00','2026-06-12T22:00:00','2026-06-20T18:00:00','2026-06-20T22:00:00','2026-06-28T16:00:00','2026-06-28T16:00:00'],
+  // Grupo D — 13 Jun
+  D: ['2026-06-13T12:00:00','2026-06-13T16:00:00','2026-06-21T12:00:00','2026-06-21T16:00:00','2026-06-29T16:00:00','2026-06-29T16:00:00'],
+  // Grupo E — 13 Jun
+  E: ['2026-06-13T18:00:00','2026-06-13T22:00:00','2026-06-21T18:00:00','2026-06-21T22:00:00','2026-06-29T16:00:00','2026-06-29T16:00:00'],
+  // Grupo F — 14 Jun
+  F: ['2026-06-14T12:00:00','2026-06-14T16:00:00','2026-06-22T12:00:00','2026-06-22T16:00:00','2026-06-30T16:00:00','2026-06-30T16:00:00'],
+  // Grupo G — 14 Jun
+  G: ['2026-06-14T18:00:00','2026-06-14T22:00:00','2026-06-22T18:00:00','2026-06-22T22:00:00','2026-06-30T16:00:00','2026-06-30T16:00:00'],
+  // Grupo H — 15 Jun
+  H: ['2026-06-15T12:00:00','2026-06-15T16:00:00','2026-06-23T12:00:00','2026-06-23T16:00:00','2026-07-01T16:00:00','2026-07-01T16:00:00'],
+  // Grupo I — 15 Jun
+  I: ['2026-06-15T18:00:00','2026-06-15T22:00:00','2026-06-23T18:00:00','2026-06-23T22:00:00','2026-07-01T16:00:00','2026-07-01T16:00:00'],
+  // Grupo J — 16 Jun
+  J: ['2026-06-16T12:00:00','2026-06-16T16:00:00','2026-06-24T12:00:00','2026-06-24T16:00:00','2026-07-02T16:00:00','2026-07-02T16:00:00'],
+  // Grupo K — 16 Jun
+  K: ['2026-06-16T18:00:00','2026-06-16T22:00:00','2026-06-24T18:00:00','2026-06-24T22:00:00','2026-07-02T16:00:00','2026-07-02T16:00:00'],
+  // Grupo L — 17 Jun
+  L: ['2026-06-17T12:00:00','2026-06-17T16:00:00','2026-06-25T12:00:00','2026-06-25T16:00:00','2026-07-02T16:00:00','2026-07-02T16:00:00'],
 };
 
 function isMatchLocked(group, matchIndex) {
-  const dayIdx = matchIndex < 2 ? 0 : matchIndex < 4 ? 1 : 2;
   const dates = GROUP_LOCK_DATES[group];
-  if (!dates) return false;
-  return new Date() >= new Date(dates[dayIdx]);
+  if (!dates || !dates[matchIndex]) return false;
+  return new Date() >= new Date(dates[matchIndex]);
 }
 
 // State
 const scores = {}; // key: "groupX_t1vt2" => {g1, g2}
 const standings = {}; // computed from scores
+let actualResults = {}; // resultados reais vindos do Firebase
 let bracketData = {}; // bracket state
 let monteResults = null;
 let aiAnalysisCache = {};
@@ -1141,12 +1156,28 @@ function showSection(name) {
     const key = name.substring(0, 4);
     if (txt.includes(key) || (name === 'configuracoes' && txt.includes('config'))) t.classList.add('active');
   });
+  if (name === 'grupos')        { loadActualResultsForGroups(); }
   if (name === 'probabilidades') { renderChampGrid(); renderMonteChart(); }
   if (name === 'analise') { renderAnalysisSummary(); renderRankings(); }
   if (name === 'chaveamento') { renderBracket(); }
   if (name === 'configuracoes') { loadSettingsUI(); }
   if (name === 'ranking')       { loadRanking(); }
   if (name === 'admin')         { if (!isAdmin()) { showSection('grupos'); return; } loadAdminSection(); }
+}
+
+async function loadActualResultsForGroups() {
+  const fbUrl = getFirebaseUrl();
+  if (!fbUrl) return;
+  try {
+    const res = await fetch(`${fbUrl}/actualResults.json`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data) {
+        actualResults = data;
+        renderGroups(); // re-renderiza com resultados reais
+      }
+    }
+  } catch(e) {}
 }
 
 function getTeamById(id) {
@@ -1253,42 +1284,70 @@ function renderMatchRow(group, t1id, t2id, mi) {
   const sc = scores[key] || {};
   const locked = isMatchLocked(group, mi);
   const { label, dateStr } = getRoundInfo(mi, group);
-  const lockedAttr = locked ? ' disabled class="score-input locked"' : ' class="score-input"';
+  const actual = actualResults[key];
   const hasPred = sc.g1 !== null && sc.g1 !== undefined && sc.g2 !== null && sc.g2 !== undefined;
-  const lockBadge = locked
-    ? (hasPred
+
+  let scoreBlock, badgeBlock;
+
+  if (actual) {
+    // Resultado real disponível — exibe placar oficial
+    const ag1 = actual.g1, ag2 = actual.g2;
+    let pts = '', ptsStyle = '';
+    if (hasPred) {
+      const pg1 = parseInt(sc.g1), pg2 = parseInt(sc.g2);
+      if (pg1 === ag1 && pg2 === ag2)                             { pts = '✅ +10'; ptsStyle = 'color:#22c55e'; }
+      else if (Math.sign(pg1 - pg2) === Math.sign(ag1 - ag2))    { pts = '✓ +3';  ptsStyle = 'color:var(--cyan)'; }
+      else                                                         { pts = '✗ 0';   ptsStyle = 'color:var(--text3)'; }
+    } else {
+      pts = '— sem palpite'; ptsStyle = 'color:#f87171';
+    }
+    scoreBlock = `<div class="match-score-inputs">
+      <span class="score-actual-num">${ag1}</span>
+      <span class="score-sep">×</span>
+      <span class="score-actual-num">${ag2}</span>
+    </div>`;
+    badgeBlock = `<span class="match-locked-badge" style="${ptsStyle};background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1)">${pts}</span>`;
+  } else {
+    const lockedAttr = locked ? ' disabled class="score-input locked"' : ' class="score-input"';
+    scoreBlock = `<div class="match-score-inputs">
+      <input${lockedAttr} type="number" min="0" max="20" value="${sc.g1??''}" placeholder="—"
+        oninput="setScore('${key}','g1',this.value)" id="sc_${key}_1">
+      <span class="score-sep">×</span>
+      <input${lockedAttr} type="number" min="0" max="20" value="${sc.g2??''}" placeholder="—"
+        oninput="setScore('${key}','g2',this.value)" id="sc_${key}_2">
+    </div>`;
+    if (locked) {
+      badgeBlock = hasPred
         ? '<span class="match-locked-badge">🔒 Encerrado</span>'
-        : '<span class="match-locked-badge" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#f87171">⚠️ Sem palpite</span>')
-    : `<span class="match-date">${dateStr}</span>`;
+        : '<span class="match-locked-badge" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#f87171">⚠️ Sem palpite</span>';
+    } else {
+      badgeBlock = `<span class="match-date">${dateStr}</span>`;
+    }
+  }
+
   return `
     <div class="match-row${locked ? ' locked-row' : ''}">
       <div class="match-teams">
         <span>${t1.flag}</span>
         <span style="font-weight:500">${t1.name}</span>
       </div>
-      <div class="match-score-inputs">
-        <input${lockedAttr} type="number" min="0" max="20" value="${sc.g1??''}" placeholder="—"
-          oninput="setScore('${key}','g1',this.value)" id="sc_${key}_1">
-        <span class="score-sep">×</span>
-        <input${lockedAttr} type="number" min="0" max="20" value="${sc.g2??''}" placeholder="—"
-          oninput="setScore('${key}','g2',this.value)" id="sc_${key}_2">
-      </div>
+      ${scoreBlock}
       <div class="match-teams" style="justify-content:flex-end">
         <span style="font-weight:500">${t2.name}</span>
         <span>${t2.flag}</span>
       </div>
-      ${lockBadge}
+      ${badgeBlock}
     </div>`;
 }
 
 function getRoundInfo(mi, group) {
-  const dayIdx = mi < 2 ? 0 : mi < 4 ? 1 : 2;
+  const roundIdx = mi < 2 ? 0 : mi < 4 ? 1 : 2;
   const labels = ['1ª Rodada', '2ª Rodada', '3ª Rodada'];
-  const dates = group && GROUP_LOCK_DATES[group] ? GROUP_LOCK_DATES[group][dayIdx] : null;
-  const dateStr = dates
-    ? new Date(dates).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
-    : ['11–17 Jun', '19–25 Jun', '27 Jun–2 Jul'][dayIdx];
-  return { label: labels[dayIdx], dateStr };
+  const lockDate = group && GROUP_LOCK_DATES[group] ? GROUP_LOCK_DATES[group][mi] : null;
+  const dateStr = lockDate
+    ? new Date(lockDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour:'2-digit', minute:'2-digit' })
+    : ['11–17 Jun', '19–25 Jun', '27 Jun–2 Jul'][roundIdx];
+  return { label: labels[roundIdx], dateStr };
 }
 
 function getRoundDate(mi) {
@@ -1329,7 +1388,7 @@ function getGroupStandings(letter) {
 
   data.matches.forEach(m => {
     const key = `${letter}_${m[0]}v${m[1]}`;
-    const sc = scores[key];
+    const sc = actualResults[key] || scores[key]; // resultado real tem prioridade
     if (!sc || sc.g1 === null || sc.g2 === null || sc.g1 === undefined || sc.g2 === undefined) return;
     const g1 = parseInt(sc.g1), g2 = parseInt(sc.g2);
     stat[m[0]].pj++; stat[m[1]].pj++;
@@ -2536,6 +2595,9 @@ Forças, fraquezas, histórico recente e rota provável no torneio. 3 parágrafo
 function init() {
   // 1. Restore scores from localStorage BEFORE rendering
   loadLocalScores();
+
+  // 2. Load actual results from Firebase then re-render groups
+  loadActualResultsForGroups();
 
   renderGroups();
   calcAllStandings();
