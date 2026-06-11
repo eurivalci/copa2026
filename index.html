@@ -430,12 +430,119 @@
   /* CHANGE PASSWORD */
   .pwd-form { display: flex; flex-direction: column; gap: 10px; }
 
-  /* Responsive */
-  @media (max-width: 640px) {
-    .hero h1 { font-size: 28px; }
-    .nav-tabs { display: none; }
-    .groups-grid { grid-template-columns: 1fr; }
-    .bracket-container { min-width: 900px; }
+  /* MOBILE BOTTOM NAV */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0d1323;
+    border-top: 1px solid rgba(245,200,66,0.25);
+    z-index: 200;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .mobile-nav-inner { display: flex; justify-content: space-around; }
+  .mobile-nav-btn {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; padding: 8px 2px 9px;
+    border: none; background: transparent;
+    color: var(--text3); font-size: 9px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .4px; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; transition: color .15s;
+  }
+  .mobile-nav-btn .mn-icon { font-size: 19px; line-height: 1.1; }
+  .mobile-nav-btn.active { color: var(--gold); }
+  .mobile-nav-btn:active { opacity: .7; }
+
+  /* === RESPONSIVO — tablets e celulares === */
+  @media (max-width: 768px) {
+    .nav-tabs { display: none !important; }
+    .mobile-nav { display: block; }
+    .main { padding: 1rem 1rem 80px; }
+
+    /* Header */
+    .site-header { padding: 0 .75rem; }
+    .header-inner { height: 52px; }
+    .logo-sub, .logo-dev { display: none; }
+    .logo-text { font-size: 16px; }
+    .logo-ball { font-size: 23px; }
+    .score-badge { font-size: 11px; padding: 3px 10px; }
+    .user-chip { padding: 4px 10px; font-size: 12px; }
+
+    /* Hero */
+    .hero { padding: 1.25rem 0 1rem; }
+    .hero h1 { font-size: 26px; }
+    .hero p { font-size: 13px; }
+    .hero-stats { gap: 8px; margin-top: 1rem; }
+    .hero-stat { padding: 9px 12px; min-width: 75px; }
+    .hero-stat .num { font-size: 20px; }
+    .hero-stat .lbl { font-size: 10px; }
+
+    /* Grupos */
+    .groups-grid { grid-template-columns: 1fr; gap: 12px; }
+    .groups-header { flex-wrap: wrap; gap: 8px; }
+
+    /* Tabela do grupo — esconde J V E D, mantém SG e Pts */
+    .group-table thead th:nth-child(n+2):nth-child(-n+5) { display: none; }
+    .group-table tbody td:nth-child(n+3):nth-child(-n+6) { display: none; }
+
+    /* Inputs de placar — alvos de toque maiores */
+    .match-row { padding: 7px 10px; gap: 6px; }
+    .score-input { width: 40px; height: 36px; font-size: 16px; }
+    .match-teams { font-size: 12px; }
+    .match-date { font-size: 9px; }
+
+    /* Chaveamento — scroll horizontal */
+    .bracket-container { min-width: 860px; }
+
+    /* Ranking — esconde coluna de progresso */
+    .rank-list-row { grid-template-columns: 36px 1fr 56px 50px; padding: 11px 12px; }
+    .rank-list-row > :nth-child(4) { display: none; }
+    .rank-list-row.hdr > :nth-child(4) { display: none; }
+
+    /* Pódio */
+    .podium-wrap { gap: 6px; max-width: 100%; }
+    .podium-avatar { width: 40px; height: 40px; font-size: 18px; }
+    .podium-pts { font-size: 20px; }
+    .podium-name { font-size: 11px; }
+    .podium-medal { font-size: 22px; }
+
+    /* Probabilidades e odds */
+    .prob-grid { grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 8px; }
+    .champ-grid { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    /* Configurações */
+    .settings-section { padding: 0; }
+    .settings-card { padding: 1rem; }
+    .api-test-btn { margin-left: 0; margin-top: 8px; }
+
+    /* Admin */
+    .admin-section-wrap { padding: 0; }
+    .admin-card { padding: 1rem; }
+    .participant-row { grid-template-columns: 1fr 80px; }
+    .participant-row > :nth-child(2) { display: none; }
+
+    /* Análise IA */
+    .ai-actions { gap: 6px; }
+    .ai-btn { padding: 5px 10px; font-size: 11px; }
+
+    /* Notificação — acima do nav mobile */
+    .notif { bottom: 76px; right: 10px; left: 10px; max-width: unset; }
+
+    /* Footer */
+    .footer-top { flex-direction: column; gap: 1rem; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+
+  @media (max-width: 380px) {
+    .hero h1 { font-size: 21px; }
+    .logo-text { font-size: 14px; }
+    .logo-ball { font-size: 20px; }
+    .score-input { width: 36px; height: 34px; }
+    .rank-list-row { grid-template-columns: 30px 1fr 48px 44px; padding: 9px 10px; }
+    .podium-pts { font-size: 17px; }
+    .hero-stat { padding: 8px 10px; min-width: 68px; }
   }
 </style>
 </head>
@@ -1012,6 +1119,9 @@ function notify(msg, type='') {
 function showSection(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  const mnavBtn = document.getElementById('mnav-' + name);
+  if (mnavBtn) mnavBtn.classList.add('active');
   const target = document.getElementById('section-' + name);
   if (target) target.classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => {
@@ -1643,6 +1753,8 @@ function isAdmin() {
 function setAdminTabVisible(visible) {
   const tab = document.getElementById('admin-nav-tab');
   if (tab) tab.style.display = visible ? 'inline-flex' : 'none';
+  const mnavAdmin = document.getElementById('mnav-admin');
+  if (mnavAdmin) mnavAdmin.style.display = visible ? 'flex' : 'none';
 }
 
 function showAuthModal(tab = 'login') {
@@ -2398,5 +2510,31 @@ function init() {
 
 window.addEventListener('load', init);
 </script>
+
+<nav class="mobile-nav" id="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" id="mnav-grupos" onclick="showSection('grupos')">
+      <span class="mn-icon">🏟️</span><span>Grupos</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-probabilidades" onclick="showSection('probabilidades')">
+      <span class="mn-icon">📊</span><span>Odds</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-chaveamento" onclick="showSection('chaveamento')">
+      <span class="mn-icon">🔗</span><span>Chave</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-analise" onclick="showSection('analise')">
+      <span class="mn-icon">🤖</span><span>IA</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-ranking" onclick="showSection('ranking')">
+      <span class="mn-icon">🏆</span><span>Ranking</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-configuracoes" onclick="showSection('configuracoes')">
+      <span class="mn-icon">⚙️</span><span>Config</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-admin" onclick="showSection('admin')" style="display:none">
+      <span class="mn-icon">🔧</span><span>Admin</span>
+    </button>
+  </div>
+</nav>
 </body>
 </html>
