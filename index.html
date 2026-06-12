@@ -433,6 +433,36 @@
   /* ACTUAL SCORE */
   .score-actual-num { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold); min-width: 22px; text-align: center; }
 
+  /* RESULTS SUMMARY */
+  .rs-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .rs-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: linear-gradient(135deg,#1a2a4a,#1a1f35); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+  .rs-header-title { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+  .rs-totals { display: flex; gap: 16px; }
+  .rs-total-item { text-align: center; }
+  .rs-total-val { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1; }
+  .rs-total-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+  .rs-list { display: flex; flex-direction: column; }
+  .rs-row { display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+  .rs-row:last-child { border-bottom: none; }
+  .rs-group { font-size: 10px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; width: 20px; flex-shrink: 0; }
+  .rs-match { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .rs-team { display: flex; align-items: center; gap: 4px; font-size: 12px; flex: 1; }
+  .rs-team.right { justify-content: flex-end; }
+  .rs-score-block { display: flex; flex-direction: column; align-items: center; gap: 1px; flex-shrink: 0; }
+  .rs-score-actual { display: flex; align-items: center; gap: 5px; }
+  .rs-score-num { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; color: var(--gold); min-width: 18px; text-align: center; }
+  .rs-score-pred { font-size: 10px; color: var(--text3); }
+  .rs-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .rs-badge.exact  { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+  .rs-badge.correct{ background: rgba(6,182,212,0.12);  color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+  .rs-badge.wrong  { background: rgba(255,255,255,0.04); color: var(--text3); border: 1px solid var(--border); }
+  .rs-badge.none   { background: rgba(239,68,68,0.10);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+  @media (max-width: 768px) {
+    .rs-row { padding: 9px 12px; gap: 6px; }
+    .rs-score-num { font-size: 15px; }
+    .rs-team span:last-child { display: none; } /* hide name, keep flag on very small */
+  }
+
   /* MOBILE BOTTOM NAV */
   .mobile-nav {
     display: none;
@@ -618,6 +648,9 @@
         <span style="margin-left:auto"><button class="btn btn-gold" onclick="calcAllStandings()">Recalcular Tabelas</button> <button class="btn btn-outline" style="margin-left:8px" onclick="getAIAnalysis('grupos')">✨ Analisar com IA</button></span>
       </div>
     </div>
+    <!-- Resumo de resultados -->
+    <div id="results-summary" style="display:none;margin-bottom:1.25rem"></div>
+
     <div class="groups-header"><h2>Fase de Grupos — A a L</h2></div>
     <div class="groups-grid" id="groups-grid"></div>
   </section>
@@ -1127,6 +1160,8 @@ function isMatchLocked(group, matchIndex) {
 const scores = {}; // key: "groupX_t1vt2" => {g1, g2}
 const standings = {}; // computed from scores
 let actualResults = {}; // resultados reais vindos do Firebase
+let resultsStream = null; // EventSource SSE
+let streamInitialized = false;
 let bracketData = {}; // bracket state
 let monteResults = null;
 let aiAnalysisCache = {};
@@ -1135,12 +1170,12 @@ let syncDebounceTimer = null;
 // =====================================================================
 // UTILS
 // =====================================================================
-function notify(msg, type='') {
+function notify(msg, type='', duration=3000) {
   const el = document.createElement('div');
   el.className = 'notif ' + type;
   el.innerHTML = msg;
   document.getElementById('notif-container').appendChild(el);
-  setTimeout(() => el.remove(), 3000);
+  setTimeout(() => el.remove(), duration);
 }
 
 function showSection(name) {
@@ -1174,10 +1209,193 @@ async function loadActualResultsForGroups() {
       const data = await res.json();
       if (data) {
         actualResults = data;
-        renderGroups(); // re-renderiza com resultados reais
+        renderGroups();
+        renderResultsSummary();
       }
     }
   } catch(e) {}
+}
+
+function renderResultsSummary() {
+  const el = document.getElementById('results-summary');
+  if (!el) return;
+  const keys = Object.keys(actualResults || {});
+  if (keys.length === 0) { el.style.display = 'none'; return; }
+
+  let totalPts = 0, exact = 0, correct = 0, wrong = 0, noPred = 0;
+
+  const rows = keys.map(key => {
+    // key = "A_mexvrsa"
+    const [group, matchPart] = key.split('_');
+    const groupData = GROUPS[group];
+    if (!groupData) return '';
+
+    const actual = actualResults[key];
+    const pred   = scores[key];
+    const ag1 = parseInt(actual.g1), ag2 = parseInt(actual.g2);
+
+    // find teams
+    const matchEntry = groupData.matches.find(m => `${m[0]}v${m[1]}` === matchPart);
+    if (!matchEntry) return '';
+    const t1 = groupData.teams.find(t => t.id === matchEntry[0]);
+    const t2 = groupData.teams.find(t => t.id === matchEntry[1]);
+    if (!t1 || !t2) return '';
+
+    const hasPred = pred && pred.g1 !== null && pred.g1 !== undefined && pred.g2 !== null && pred.g2 !== undefined;
+    let badgeCls, badgeTxt, pts = 0;
+
+    if (!hasPred) {
+      badgeCls = 'none'; badgeTxt = '— sem palpite'; noPred++;
+    } else {
+      const pg1 = parseInt(pred.g1), pg2 = parseInt(pred.g2);
+      if (pg1 === ag1 && pg2 === ag2) {
+        pts = 10; badgeCls = 'exact'; badgeTxt = '✅ +10'; exact++;
+      } else if (Math.sign(pg1 - pg2) === Math.sign(ag1 - ag2)) {
+        pts = 3; badgeCls = 'correct'; badgeTxt = '✓ +3'; correct++;
+      } else {
+        pts = 0; badgeCls = 'wrong'; badgeTxt = '✗ 0'; wrong++;
+      }
+    }
+    totalPts += pts;
+
+    const predTxt = hasPred ? `${pred.g1}×${pred.g2}` : '?×?';
+
+    return `<div class="rs-row">
+      <span class="rs-group">${group}</span>
+      <div class="rs-match">
+        <div class="rs-team">${t1.flag} <span>${t1.name}</span></div>
+        <div class="rs-score-block">
+          <div class="rs-score-actual">
+            <span class="rs-score-num">${ag1}</span>
+            <span style="color:var(--text3);font-size:11px;font-weight:700">×</span>
+            <span class="rs-score-num">${ag2}</span>
+          </div>
+          <div class="rs-score-pred">palpite: ${predTxt}</div>
+        </div>
+        <div class="rs-team right"><span>${t2.name}</span> ${t2.flag}</div>
+      </div>
+      <span class="rs-badge ${badgeCls}">${badgeTxt}</span>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  const played      = keys.length;
+  const withPred    = exact + correct + wrong;
+  const aprovPct    = withPred > 0 ? Math.round((exact + correct) / withPred * 100) : 0;
+  const maxPts      = withPred * 10;
+  const effPct      = maxPts > 0 ? Math.round(totalPts / maxPts * 100) : 0;
+
+  // bullet bar color
+  const aprovColor  = aprovPct >= 60 ? '#22c55e' : aprovPct >= 40 ? 'var(--gold)' : '#f87171';
+
+  el.style.display = 'block';
+  el.innerHTML = `<div class="rs-card">
+    <div class="rs-header">
+      <div class="rs-header-title">🎯 Meus Resultados</div>
+      <div class="rs-totals">
+        <div class="rs-total-item"><div class="rs-total-val">${totalPts}</div><div class="rs-total-lbl">Pontos</div></div>
+        <div class="rs-total-item"><div class="rs-total-val" style="color:#22c55e">${exact}</div><div class="rs-total-lbl">Exatos</div></div>
+        <div class="rs-total-item"><div class="rs-total-val" style="color:var(--cyan)">${correct}</div><div class="rs-total-lbl">Certos</div></div>
+        <div class="rs-total-item"><div class="rs-total-val" style="color:var(--text3)">${wrong}</div><div class="rs-total-lbl">Erros</div></div>
+      </div>
+    </div>
+    <div style="padding:10px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+        <span style="color:var(--text3);width:16px">•</span>
+        <span style="color:var(--text2)"><strong style="color:${aprovColor}">${aprovPct}%</strong> de aproveitamento — ${exact + correct} acerto${exact+correct!==1?'s':''} em ${withPred} jogo${withPred!==1?'s':''} apostado${withPred!==1?'s':''}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+        <span style="color:var(--text3);width:16px">•</span>
+        <span style="color:var(--text2)"><strong style="color:var(--gold)">${totalPts} ponto${totalPts!==1?'s':''}</strong> acumulado${totalPts!==1?'s':''} — ${effPct}% do máximo possível nos jogos encerrados</span>
+      </div>
+      ${noPred > 0 ? `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+        <span style="color:var(--text3);width:16px">•</span>
+        <span style="color:#f87171">${noPred} jogo${noPred!==1?'s':''} sem palpite — ${noPred * 10} ponto${noPred!==1?'s':''} perdido${noPred!==1?'s':''}</span>
+      </div>` : ''}
+    </div>
+    <div class="rs-list">${rows}</div>
+  </div>`;
+}
+
+// =====================================================================
+// FIREBASE REALTIME STREAMING — notificações automáticas de resultados
+// =====================================================================
+function startResultsStream() {
+  const fbUrl = getFirebaseUrl();
+  if (!fbUrl || resultsStream) return;
+  streamInitialized = false;
+  try {
+    resultsStream = new EventSource(`${fbUrl}/actualResults.json`);
+    resultsStream.addEventListener('put',   onStreamPut);
+    resultsStream.addEventListener('patch', onStreamPatch);
+    resultsStream.onerror = () => {
+      resultsStream.close();
+      resultsStream = null;
+      setTimeout(startResultsStream, 30000); // reconnect em 30s
+    };
+  } catch(e) {}
+}
+
+function onStreamPut(e) {
+  try {
+    const newData = JSON.parse(e.data).data;
+    if (!newData) return;
+    if (!streamInitialized) {
+      // Primeira mensagem = estado atual, sem notificação
+      streamInitialized = true;
+      actualResults = newData;
+      renderGroups();
+      renderResultsSummary();
+      return;
+    }
+    notifyNewResults(newData);
+    actualResults = newData;
+    renderGroups();
+    renderResultsSummary();
+  } catch(err) {}
+}
+
+function onStreamPatch(e) {
+  try {
+    const patchData = JSON.parse(e.data).data;
+    if (!patchData) return;
+    notifyNewResults(patchData);
+    Object.assign(actualResults, patchData);
+    renderGroups();
+    renderResultsSummary();
+  } catch(err) {}
+}
+
+function notifyNewResults(incoming) {
+  Object.entries(incoming).forEach(([key, result]) => {
+    if (actualResults[key]) return; // já conhecido
+    const [group, matchPart] = key.split('_');
+    const gData = GROUPS[group];
+    if (!gData) return;
+    const m = gData.matches.find(x => `${x[0]}v${x[1]}` === matchPart);
+    if (!m) return;
+    const t1 = gData.teams.find(t => t.id === m[0]);
+    const t2 = gData.teams.find(t => t.id === m[1]);
+    if (!t1 || !t2) return;
+
+    const pred  = scores[key];
+    const hasPred = pred && pred.g1 !== null && pred.g1 !== undefined
+                         && pred.g2 !== null && pred.g2 !== undefined;
+    let extra = '';
+    if (hasPred) {
+      const pg1 = parseInt(pred.g1), pg2 = parseInt(pred.g2);
+      const ag1 = parseInt(result.g1), ag2 = parseInt(result.g2);
+      if (pg1 === ag1 && pg2 === ag2)
+        extra = ' &nbsp;✅ <strong>+10 pts!</strong>';
+      else if (Math.sign(pg1 - pg2) === Math.sign(ag1 - ag2))
+        extra = ' &nbsp;✓ +3 pts';
+      else
+        extra = ' &nbsp;✗ 0 pts';
+    }
+    notify(
+      `⚽ ${t1.flag} ${t1.name} <strong>${result.g1}×${result.g2}</strong> ${t2.name} ${t2.flag}${extra}`,
+      'gold', 7000
+    );
+  });
 }
 
 function getTeamById(id) {
@@ -1354,6 +1572,24 @@ function getRoundDate(mi) {
   return getRoundInfo(mi).label;
 }
 
+function getExpandedGroups() {
+  return Object.keys(GROUPS).filter(letter => {
+    const el = document.getElementById(`matches-${letter}`);
+    return el && el.style.display !== 'none';
+  });
+}
+
+function renderGroupsPreservingExpanded() {
+  const expanded = getExpandedGroups();
+  renderGroups();
+  expanded.forEach(letter => {
+    const el  = document.getElementById(`matches-${letter}`);
+    const btn = document.querySelector(`#group-card-${letter} .toggle-matches`);
+    if (el)  el.style.display = 'block';
+    if (btn) btn.textContent = 'fechar ▲';
+  });
+}
+
 function toggleMatches(letter) {
   const el = document.getElementById(`matches-${letter}`);
   const btn = document.querySelector(`#group-card-${letter} .toggle-matches`);
@@ -1367,9 +1603,18 @@ function toggleMatches(letter) {
 }
 
 function setScore(key, side, val) {
+  // Verifica se o jogo já travou mesmo com o app aberto
+  const group     = key.split('_')[0];
+  const matchPart = key.split('_').slice(1).join('_');
+  const groupData = GROUPS[group];
+  const mi = groupData ? groupData.matches.findIndex(m => `${m[0]}v${m[1]}` === matchPart) : -1;
+  if (mi >= 0 && isMatchLocked(group, mi)) {
+    notify('🔒 Palpites encerrados para este jogo.', '', 3000);
+    renderGroupsPreservingExpanded(); // atualiza visual imediatamente
+    return;
+  }
   if (!scores[key]) scores[key] = {};
   scores[key][side] = val === '' ? null : Math.max(0, Math.min(20, parseInt(val)||0));
-  const group = key.split('_')[0];
   updateGroupStandings(group);
   updateProgress();
   saveLocalScores();
@@ -2596,8 +2841,12 @@ function init() {
   // 1. Restore scores from localStorage BEFORE rendering
   loadLocalScores();
 
-  // 2. Load actual results from Firebase then re-render groups
+  // 2. Load actual results + start real-time stream
   loadActualResultsForGroups();
+  startResultsStream();
+
+  // 3. Re-verifica locks a cada 60s (app pode ficar aberto além do horário)
+  setInterval(renderGroupsPreservingExpanded, 60000);
 
   renderGroups();
   calcAllStandings();
