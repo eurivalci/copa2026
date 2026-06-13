@@ -641,11 +641,17 @@
         <span class="progress-pct" id="prog-pct">0%</span>
       </div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar" style="width:0%"></div></div>
-      <div style="margin-top:8px;display:flex;gap:12px;font-size:12px;color:var(--text3);flex-wrap:wrap">
+      <div style="margin-top:8px;display:flex;gap:12px;font-size:12px;color:var(--text3);flex-wrap:wrap;align-items:center">
         <span>🟡 1º classificado</span>
         <span>🟢 2º classificado</span>
         <span>🔵 Possível 3º melhor</span>
         <span style="margin-left:auto"><button class="btn btn-gold" onclick="calcAllStandings()">Recalcular Tabelas</button> <button class="btn btn-outline" style="margin-left:8px" onclick="getAIAnalysis('grupos')">✨ Analisar com IA</button></span>
+      </div>
+      <div style="margin-top:10px;padding:8px 12px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+        <span style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Pontuação:</span>
+        <span style="font-size:11px;color:var(--text2)">⚽ Placar exato <strong style="color:var(--gold)">+10 pts</strong></span>
+        <span style="font-size:11px;color:var(--text2)">✅ Resultado certo (V/E/D) <strong style="color:var(--cyan)">+3 pts</strong></span>
+        <span style="font-size:11px;color:var(--text3)">✗ Errado <strong>0 pts</strong></span>
       </div>
     </div>
     <!-- Resumo de resultados -->
@@ -1119,35 +1125,95 @@ const BOLAO_ADMIN_USER = 'EuryDuartePin';    // ← nome de usuário do administ
 const BOLAO_ADMIN_PWD  = 'c33339b0bd56fb3aecce652307b91c95fc50e2294e7a7a8329bfe259969235f7'; // ← hash SHA-256 da senha
 
 // =====================================================================
-// MATCH LOCK DATES — Copa do Mundo 2026
-// 6 horários por grupo: [jogo0, jogo1, jogo2, jogo3, jogo4, jogo5]
-// Horários no fuso horário local. Ajuste conforme tabela oficial FIFA.
+// MATCH LOCK DATES — Copa do Mundo 2026 (horário de Brasília)
+// 6 horários por grupo correspondendo a matches[0..5] do GROUPS acima
+// Fonte: tabela oficial FIFA (trivela.com.br)
 // =====================================================================
 const GROUP_LOCK_DATES = {
-  // Grupo A — 11 Jun (jogo 0: 16h, jogo 1: 22h)
-  A: ['2026-06-11T16:00:00','2026-06-11T22:00:00','2026-06-19T12:00:00','2026-06-19T16:00:00','2026-06-27T16:00:00','2026-06-27T16:00:00'],
-  // Grupo B — 12 Jun
-  B: ['2026-06-12T12:00:00','2026-06-12T16:00:00','2026-06-20T12:00:00','2026-06-20T16:00:00','2026-06-28T16:00:00','2026-06-28T16:00:00'],
-  // Grupo C — 12 Jun
-  C: ['2026-06-12T18:00:00','2026-06-12T22:00:00','2026-06-20T18:00:00','2026-06-20T22:00:00','2026-06-28T16:00:00','2026-06-28T16:00:00'],
-  // Grupo D — 13 Jun
-  D: ['2026-06-13T12:00:00','2026-06-13T16:00:00','2026-06-21T12:00:00','2026-06-21T16:00:00','2026-06-29T16:00:00','2026-06-29T16:00:00'],
-  // Grupo E — 13 Jun
-  E: ['2026-06-13T18:00:00','2026-06-13T22:00:00','2026-06-21T18:00:00','2026-06-21T22:00:00','2026-06-29T16:00:00','2026-06-29T16:00:00'],
-  // Grupo F — 14 Jun
-  F: ['2026-06-14T12:00:00','2026-06-14T16:00:00','2026-06-22T12:00:00','2026-06-22T16:00:00','2026-06-30T16:00:00','2026-06-30T16:00:00'],
-  // Grupo G — 14 Jun
-  G: ['2026-06-14T18:00:00','2026-06-14T22:00:00','2026-06-22T18:00:00','2026-06-22T22:00:00','2026-06-30T16:00:00','2026-06-30T16:00:00'],
-  // Grupo H — 15 Jun
-  H: ['2026-06-15T12:00:00','2026-06-15T16:00:00','2026-06-23T12:00:00','2026-06-23T16:00:00','2026-07-01T16:00:00','2026-07-01T16:00:00'],
-  // Grupo I — 15 Jun
-  I: ['2026-06-15T18:00:00','2026-06-15T22:00:00','2026-06-23T18:00:00','2026-06-23T22:00:00','2026-07-01T16:00:00','2026-07-01T16:00:00'],
-  // Grupo J — 16 Jun
-  J: ['2026-06-16T12:00:00','2026-06-16T16:00:00','2026-06-24T12:00:00','2026-06-24T16:00:00','2026-07-02T16:00:00','2026-07-02T16:00:00'],
-  // Grupo K — 16 Jun
-  K: ['2026-06-16T18:00:00','2026-06-16T22:00:00','2026-06-24T18:00:00','2026-06-24T22:00:00','2026-07-02T16:00:00','2026-07-02T16:00:00'],
-  // Grupo L — 17 Jun
-  L: ['2026-06-17T12:00:00','2026-06-17T16:00:00','2026-06-25T12:00:00','2026-06-25T16:00:00','2026-07-02T16:00:00','2026-07-02T16:00:00'],
+  // Grupo A: [mex-rsa, kor-cze, mex-kor, rsa-cze, mex-cze, kor-rsa]
+  A: ['2026-06-11T16:00:00', // mex-rsa: 11 Jun 16h
+      '2026-06-11T23:00:00', // kor-cze: 11 Jun 23h
+      '2026-06-18T22:00:00', // mex-kor: 18 Jun 22h
+      '2026-06-18T13:00:00', // rsa-cze: 18 Jun 13h
+      '2026-06-24T22:00:00', // mex-cze: 24 Jun 22h
+      '2026-06-24T22:00:00'],// kor-rsa: 24 Jun 22h
+  // Grupo B: [can-qat, sui-bih, can-sui, qat-bih, can-bih, sui-qat]
+  B: ['2026-06-18T19:00:00', // can-qat: 18 Jun 19h
+      '2026-06-18T16:00:00', // sui-bih: 18 Jun 16h
+      '2026-06-24T16:00:00', // can-sui: 24 Jun 16h
+      '2026-06-24T16:00:00', // qat-bih: 24 Jun 16h
+      '2026-06-12T16:00:00', // can-bih: 12 Jun 16h
+      '2026-06-13T16:00:00'],// sui-qat: 13 Jun 16h
+  // Grupo C: [bra-mar, sco-hai, bra-sco, mar-hai, bra-hai, sco-mar]
+  C: ['2026-06-13T19:00:00', // bra-mar: 13 Jun 19h
+      '2026-06-13T22:00:00', // sco-hai: 13 Jun 22h
+      '2026-06-24T19:00:00', // bra-sco: 24 Jun 19h
+      '2026-06-24T19:00:00', // mar-hai: 24 Jun 19h
+      '2026-06-19T21:30:00', // bra-hai: 19 Jun 21h30
+      '2026-06-19T19:00:00'],// sco-mar: 19 Jun 19h
+  // Grupo D: [usa-par, aus-tur, usa-aus, par-tur, usa-tur, aus-par]
+  D: ['2026-06-12T22:00:00', // usa-par: 12 Jun 22h
+      '2026-06-14T01:00:00', // aus-tur: 14 Jun 01h
+      '2026-06-19T16:00:00', // usa-aus: 19 Jun 16h
+      '2026-06-20T00:00:00', // par-tur: 20 Jun 00h
+      '2026-06-25T23:00:00', // usa-tur: 25 Jun 23h
+      '2026-06-25T23:00:00'],// aus-par: 25 Jun 23h
+  // Grupo E: [ger-civ, ecu-cur, ger-ecu, civ-cur, ger-cur, ecu-civ]
+  E: ['2026-06-20T17:00:00', // ger-civ: 20 Jun 17h
+      '2026-06-20T21:00:00', // ecu-cur: 20 Jun 21h
+      '2026-06-25T17:00:00', // ger-ecu: 25 Jun 17h
+      '2026-06-25T17:00:00', // civ-cur: 25 Jun 17h
+      '2026-06-14T14:00:00', // ger-cur: 14 Jun 14h
+      '2026-06-14T20:00:00'],// ecu-civ: 14 Jun 20h
+  // Grupo F: [ned-jpn, tun-ukr, ned-tun, jpn-ukr, ned-ukr, jpn-tun]
+  F: ['2026-06-14T17:00:00', // ned-jpn: 14 Jun 17h
+      '2026-06-14T23:00:00', // tun-ukr: 14 Jun 23h
+      '2026-06-25T20:00:00', // ned-tun: 25 Jun 20h
+      '2026-06-25T20:00:00', // jpn-ukr: 25 Jun 20h
+      '2026-06-20T14:00:00', // ned-ukr: 20 Jun 14h
+      '2026-06-21T01:00:00'],// jpn-tun: 21 Jun 01h
+  // Grupo G: [bel-egy, irn-nzl, bel-irn, egy-nzl, bel-nzl, irn-egy]
+  G: ['2026-06-15T16:00:00', // bel-egy: 15 Jun 16h
+      '2026-06-15T22:00:00', // irn-nzl: 15 Jun 22h
+      '2026-06-21T16:00:00', // bel-irn: 21 Jun 16h
+      '2026-06-21T22:00:00', // egy-nzl: 21 Jun 22h
+      '2026-06-27T00:00:00', // bel-nzl: 27 Jun 00h
+      '2026-06-27T00:00:00'],// irn-egy: 27 Jun 00h
+  // Grupo H: [esp-ksa, uru-cpv, esp-uru, ksa-cpv, esp-cpv, uru-ksa]
+  H: ['2026-06-21T13:00:00', // esp-ksa: 21 Jun 13h
+      '2026-06-21T19:00:00', // uru-cpv: 21 Jun 19h
+      '2026-06-26T21:00:00', // esp-uru: 26 Jun 21h
+      '2026-06-26T21:00:00', // ksa-cpv: 26 Jun 21h
+      '2026-06-15T13:00:00', // esp-cpv: 15 Jun 13h
+      '2026-06-15T19:00:00'],// uru-ksa: 15 Jun 19h
+  // Grupo I: [fra-sen, nor-irq, fra-nor, sen-irq, fra-irq, nor-sen]
+  I: ['2026-06-16T16:00:00', // fra-sen: 16 Jun 16h
+      '2026-06-16T19:00:00', // nor-irq: 16 Jun 19h
+      '2026-06-26T16:00:00', // fra-nor: 26 Jun 16h
+      '2026-06-26T16:00:00', // sen-irq: 26 Jun 16h
+      '2026-06-22T18:00:00', // fra-irq: 22 Jun 18h
+      '2026-06-22T21:00:00'],// nor-sen: 22 Jun 21h
+  // Grupo J: [arg-alg, aut-jor, arg-aut, alg-jor, arg-jor, aut-alg]
+  J: ['2026-06-16T22:00:00', // arg-alg: 16 Jun 22h
+      '2026-06-17T01:00:00', // aut-jor: 17 Jun 01h
+      '2026-06-22T14:00:00', // arg-aut: 22 Jun 14h
+      '2026-06-23T00:00:00', // alg-jor: 23 Jun 00h
+      '2026-06-27T23:00:00', // arg-jor: 27 Jun 23h
+      '2026-06-27T23:00:00'],// aut-alg: 27 Jun 23h
+  // Grupo K: [por-uzb, col-cod, por-col, uzb-cod, por-cod, col-uzb]
+  K: ['2026-06-23T14:00:00', // por-uzb: 23 Jun 14h
+      '2026-06-23T23:00:00', // col-cod: 23 Jun 23h
+      '2026-06-27T20:30:00', // por-col: 27 Jun 20h30
+      '2026-06-27T20:30:00', // uzb-cod: 27 Jun 20h30
+      '2026-06-17T14:00:00', // por-cod: 17 Jun 14h
+      '2026-06-17T23:00:00'],// col-uzb: 17 Jun 23h
+  // Grupo L: [eng-cro, pan-gha, eng-gha, cro-pan, eng-pan, cro-gha]
+  L: ['2026-06-17T17:00:00', // eng-cro: 17 Jun 17h
+      '2026-06-17T20:00:00', // pan-gha: 17 Jun 20h
+      '2026-06-23T17:00:00', // eng-gha: 23 Jun 17h
+      '2026-06-23T20:00:00', // cro-pan: 23 Jun 20h
+      '2026-06-27T18:00:00', // eng-pan: 27 Jun 18h
+      '2026-06-27T18:00:00'],// cro-gha: 27 Jun 18h
 };
 
 function isMatchLocked(group, matchIndex) {
@@ -2213,7 +2279,32 @@ function onAuthSuccess(name, pwd) {
   setAdminTabVisible(toSafeKey(name) === toSafeKey(BOLAO_ADMIN_USER));
   hideAuthModal();
   notify(`👋 Bem-vindo, ${name}!`, 'gold');
-  if (toSafeKey(name) !== toSafeKey(BOLAO_ADMIN_USER)) syncPredictionsToFirebase();
+  if (toSafeKey(name) !== toSafeKey(BOLAO_ADMIN_USER)) loadPredictionsFromFirebase();
+}
+
+async function loadPredictionsFromFirebase() {
+  const fbUrl    = getFirebaseUrl();
+  const username = getUsername();
+  if (!fbUrl || !username) { syncPredictionsToFirebase(); return; }
+  const safeKey  = toSafeKey(username);
+  try {
+    const res = await fetch(`${fbUrl}/predictions/${safeKey}.json`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.scores && Object.keys(data.scores).length > 0) {
+        // Merge: Firebase tem prioridade (pode ter palpites de outro aparelho)
+        Object.assign(scores, data.scores);
+        saveLocalScores();
+        renderGroupsPreservingExpanded();
+        calcAllStandings();
+        updateProgress();
+        renderResultsSummary();
+        return;
+      }
+    }
+  } catch(e) {}
+  // Se não tinha nada no Firebase, sobe o que está no localStorage
+  syncPredictionsToFirebase();
 }
 
 function logoutUser() {
