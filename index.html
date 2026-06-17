@@ -350,6 +350,30 @@
   .footer-pill.monte  { border-color: rgba(139,92,246,0.4); color: #c4b5fd; }
   .footer-pill.elo    { border-color: rgba(34,197,94,0.4);  color: #86efac; }
 
+  /* RESULTS SUMMARY TOGGLE */
+  .rs-toggle-btn { cursor: pointer; }
+  .rs-toggle-btn:hover { opacity: .9; }
+  .rs-arrow-lbl { font-size: 11px; color: var(--text3); margin-left: 10px; font-weight: 400; }
+
+  /* USER DETAIL PANEL IN RANKING */
+  .user-detail-panel { background: rgba(0,0,0,0.22); border-top: 1px solid var(--border); padding: 0 12px; }
+  .ud-group { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .ud-group:last-child { border-bottom: none; }
+  .ud-group-lbl { font-size: 10px; color: #fb923c; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 5px; }
+  .ud-match { display: flex; align-items: center; gap: 5px; padding: 4px 0; font-size: 11px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .ud-match:last-child { border-bottom: none; }
+  .ud-team { flex: 1; display: flex; align-items: center; gap: 3px; color: var(--text2); overflow: hidden; }
+  .ud-team.right { justify-content: flex-end; }
+  .ud-team span.nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ud-actual { font-family: 'Oswald', sans-serif; font-size: 13px; color: var(--gold); min-width: 38px; text-align: center; }
+  .ud-pred { font-size: 10px; color: var(--text3); min-width: 50px; text-align: center; }
+  .ud-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; }
+  .ud-badge.exact   { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+  .ud-badge.correct { background: rgba(6,182,212,0.12);  color: var(--cyan); border: 1px solid rgba(6,182,212,0.3); }
+  .ud-badge.wrong   { background: rgba(255,255,255,0.04); color: var(--text3); border: 1px solid var(--border); }
+  .ud-badge.none    { background: rgba(239,68,68,0.10);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+  .ud-empty { text-align: center; padding: 14px; color: var(--text3); font-size: 12px; }
+
   /* LOCKED MATCH */
   .score-input.locked { opacity: 0.4; cursor: not-allowed; background: var(--bg2); border-color: rgba(255,255,255,0.04); pointer-events: none; }
   .match-locked-badge { font-size: 10px; color: #ef4444; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
@@ -1232,6 +1256,9 @@ let bracketData = {}; // bracket state
 let monteResults = null;
 let aiAnalysisCache = {};
 let syncDebounceTimer = null;
+let rankingUsersData = [];
+let rankingActualResults_cache = {};
+let currentOpenDetail = -1;
 
 // =====================================================================
 // UTILS
@@ -1355,8 +1382,8 @@ function renderResultsSummary() {
 
   el.style.display = 'block';
   el.innerHTML = `<div class="rs-card">
-    <div class="rs-header">
-      <div class="rs-header-title">🎯 Meus Resultados</div>
+    <div class="rs-header rs-toggle-btn" onclick="toggleResultsSummary()">
+      <div class="rs-header-title">🎯 Meus Resultados <span id="rs-arrow" class="rs-arrow-lbl">▼ ver jogos</span></div>
       <div class="rs-totals">
         <div class="rs-total-item"><div class="rs-total-val">${totalPts}</div><div class="rs-total-lbl">Pontos</div></div>
         <div class="rs-total-item"><div class="rs-total-val" style="color:#22c55e">${exact}</div><div class="rs-total-lbl">Exatos</div></div>
@@ -1364,22 +1391,33 @@ function renderResultsSummary() {
         <div class="rs-total-item"><div class="rs-total-val" style="color:var(--text3)">${wrong}</div><div class="rs-total-lbl">Erros</div></div>
       </div>
     </div>
-    <div style="padding:10px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:7px">
-      <div style="display:flex;align-items:center;gap:8px;font-size:12px">
-        <span style="color:var(--text3);width:16px">•</span>
-        <span style="color:var(--text2)"><strong style="color:${aprovColor}">${aprovPct}%</strong> de aproveitamento — ${exact + correct} acerto${exact+correct!==1?'s':''} em ${withPred} jogo${withPred!==1?'s':''} apostado${withPred!==1?'s':''}</span>
+    <div id="rs-body" style="display:none">
+      <div style="padding:10px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <span style="color:var(--text3);width:16px">•</span>
+          <span style="color:var(--text2)"><strong style="color:${aprovColor}">${aprovPct}%</strong> de aproveitamento — ${exact + correct} acerto${exact+correct!==1?'s':''} em ${withPred} jogo${withPred!==1?'s':''} apostado${withPred!==1?'s':''}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <span style="color:var(--text3);width:16px">•</span>
+          <span style="color:var(--text2)"><strong style="color:var(--gold)">${totalPts} ponto${totalPts!==1?'s':''}</strong> acumulado${totalPts!==1?'s':''} — ${effPct}% do máximo possível nos jogos encerrados</span>
+        </div>
+        ${noPred > 0 ? `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+          <span style="color:var(--text3);width:16px">•</span>
+          <span style="color:#f87171">${noPred} jogo${noPred!==1?'s':''} sem palpite — ${noPred * 10} ponto${noPred!==1?'s':''} perdido${noPred!==1?'s':''}</span>
+        </div>` : ''}
       </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:12px">
-        <span style="color:var(--text3);width:16px">•</span>
-        <span style="color:var(--text2)"><strong style="color:var(--gold)">${totalPts} ponto${totalPts!==1?'s':''}</strong> acumulado${totalPts!==1?'s':''} — ${effPct}% do máximo possível nos jogos encerrados</span>
-      </div>
-      ${noPred > 0 ? `<div style="display:flex;align-items:center;gap:8px;font-size:12px">
-        <span style="color:var(--text3);width:16px">•</span>
-        <span style="color:#f87171">${noPred} jogo${noPred!==1?'s':''} sem palpite — ${noPred * 10} ponto${noPred!==1?'s':''} perdido${noPred!==1?'s':''}</span>
-      </div>` : ''}
+      <div class="rs-list">${rows}</div>
     </div>
-    <div class="rs-list">${rows}</div>
   </div>`;
+}
+
+function toggleResultsSummary() {
+  const body = document.getElementById('rs-body');
+  const arrow = document.getElementById('rs-arrow');
+  if (!body) return;
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = open ? '▼ ver jogos' : '▲ fechar';
 }
 
 // =====================================================================
@@ -2470,6 +2508,10 @@ function calculatePoints(userScores, actualResults) {
 }
 
 function renderRankingTable(users, myUsername, actualResults) {
+  rankingUsersData = users;
+  rankingActualResults_cache = actualResults || {};
+  currentOpenDetail = -1;
+
   const podium = document.getElementById('ranking-podium');
   const rows = document.getElementById('ranking-rows');
   const medals = ['🥇', '🥈', '🥉'];
@@ -2513,9 +2555,9 @@ function renderRankingTable(users, myUsername, actualResults) {
   if (rows) rows.innerHTML = users.map((u, i) => {
     const isMe = u.name === myUsername;
     const prog = Math.min(100, Math.round(u.filled / totalMatches * 100));
-    return `<div class="rank-list-row${isMe ? ' me' : ''}">
+    return `<div class="rank-list-row${isMe ? ' me' : ''}" onclick="toggleUserDetail(${i})" style="cursor:pointer;user-select:none">
       <div class="rank-pos-num ${i < 3 ? 'top3' : ''}">${medals[i] || (i + 1)}</div>
-      <div style="font-weight:${isMe ? '700' : '500'}">${u.name}${isMe ? ' <span style="font-size:10px;color:var(--gold)">(você)</span>' : ''}</div>
+      <div style="font-weight:${isMe ? '700' : '500'}">${u.name}${isMe ? ' <span style="font-size:10px;color:var(--gold)">(você)</span>' : ''} <span id="ud-arrow-${i}" style="font-size:9px;color:var(--text3);margin-left:3px">▼</span></div>
       <div class="rank-pts-val">${u.points}</div>
       <div>
         <div class="rank-prog-cell">
@@ -2524,8 +2566,99 @@ function renderRankingTable(users, myUsername, actualResults) {
         </div>
       </div>
       <div style="text-align:center;font-size:13px;color:var(--cyan)">${u.exact}</div>
-    </div>`;
+    </div>
+    <div id="user-detail-${i}" class="user-detail-panel" style="display:none"></div>`;
   }).join('');
+}
+
+function toggleUserDetail(idx) {
+  const el = document.getElementById(`user-detail-${idx}`);
+  if (!el) return;
+  const open = currentOpenDetail === idx && el.style.display !== 'none';
+
+  // Fecha o que estava aberto
+  if (currentOpenDetail >= 0) {
+    const prev = document.getElementById(`user-detail-${currentOpenDetail}`);
+    if (prev) prev.style.display = 'none';
+    const prevArrow = document.getElementById(`ud-arrow-${currentOpenDetail}`);
+    if (prevArrow) prevArrow.textContent = '▼';
+  }
+
+  if (open) {
+    currentOpenDetail = -1;
+  } else {
+    el.innerHTML = renderUserDetailHTML(rankingUsersData[idx]);
+    el.style.display = 'block';
+    const arrow = document.getElementById(`ud-arrow-${idx}`);
+    if (arrow) arrow.textContent = '▲';
+    currentOpenDetail = idx;
+  }
+}
+
+function renderUserDetailHTML(user) {
+  const userScores = user.scores || {};
+  const hasActual = Object.keys(rankingActualResults_cache).length > 0;
+  let groupsHtml = '';
+
+  for (const [letter, data] of Object.entries(GROUPS)) {
+    const matchRows = data.matches.map((m) => {
+      const key = `${letter}_${m[0]}v${m[1]}`;
+      const pred = userScores[key];
+      const actual = rankingActualResults_cache[key];
+      const t1 = data.teams.find(t => t.id === m[0]);
+      const t2 = data.teams.find(t => t.id === m[1]);
+      if (!t1 || !t2) return null;
+
+      const hasPred = pred && pred.g1 !== null && pred.g1 !== undefined
+                           && pred.g2 !== null && pred.g2 !== undefined;
+      if (!hasPred && !actual) return null;
+
+      const predTxt = hasPred ? `${pred.g1}×${pred.g2}` : '?×?';
+      const actualTxt = actual ? `${actual.g1}×${actual.g2}` : null;
+
+      let badgeCls = '', badgeTxt = '';
+      if (actual && hasPred) {
+        const pg1 = parseInt(pred.g1), pg2 = parseInt(pred.g2);
+        const ag1 = parseInt(actual.g1), ag2 = parseInt(actual.g2);
+        if (pg1 === ag1 && pg2 === ag2)                          { badgeCls = 'exact';   badgeTxt = '+10'; }
+        else if (Math.sign(pg1 - pg2) === Math.sign(ag1 - ag2)) { badgeCls = 'correct'; badgeTxt = '+3';  }
+        else                                                      { badgeCls = 'wrong';   badgeTxt = '0';   }
+      } else if (actual && !hasPred) {
+        badgeCls = 'none'; badgeTxt = 'sem palpite';
+      }
+
+      return `<div class="ud-match">
+        <div class="ud-team"><span>${t1.flag}</span><span class="nm">${t1.name}</span></div>
+        ${actualTxt
+          ? `<span class="ud-actual">${actualTxt}</span>`
+          : `<span class="ud-actual" style="color:var(--text3);font-size:11px">a jogar</span>`}
+        <span class="ud-pred">palp: ${predTxt}</span>
+        <div class="ud-team right"><span class="nm">${t2.name}</span><span>${t2.flag}</span></div>
+        ${badgeTxt ? `<span class="ud-badge ${badgeCls}">${badgeTxt}</span>` : ''}
+      </div>`;
+    }).filter(Boolean);
+
+    if (matchRows.length > 0) {
+      groupsHtml += `<div class="ud-group">
+        <div class="ud-group-lbl">Grupo ${letter}</div>
+        ${matchRows.join('')}
+      </div>`;
+    }
+  }
+
+  if (!groupsHtml) {
+    return '<div class="ud-empty">Nenhum palpite registrado.</div>';
+  }
+
+  const totalPts = user.points || 0;
+  const summary = `<div style="padding:8px 0 6px;display:flex;gap:14px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);margin-bottom:2px">
+    <span>⚽ <strong style="color:var(--gold)">${totalPts} pts</strong></span>
+    <span>✅ ${user.exact} placar${user.exact!==1?'es':''} exatos</span>
+    <span>✓ ${user.correct} resultado${user.correct!==1?'s':''} certos</span>
+    <span>📋 ${user.filled} palpites</span>
+  </div>`;
+
+  return summary + groupsHtml;
 }
 
 // =====================================================================
