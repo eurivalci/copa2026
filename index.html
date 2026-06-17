@@ -1057,7 +1057,7 @@ const GROUPS = {
       { id:'ned', name:'Holanda', flag:'🇳🇱', elo:1880 },
       { id:'jpn', name:'Japão', flag:'🇯🇵', elo:1760 },
       { id:'tun', name:'Tunísia', flag:'🇹🇳', elo:1530 },
-      { id:'ukr', name:'Suécia', flag:'🇺🇦', elo:1630 }
+      { id:'sue', name:'Suécia', flag:'🇸🇪', elo:1630 }
     ],
     matches:[['ned','jpn'],['tun','sue'],['ned','tun'],['jpn','sue'],['ned','sue'],['jpn','tun']]
   },
@@ -1165,7 +1165,7 @@ const GROUP_LOCK_DATES = {
       '2026-06-25T17:00:00', // civ-cur: 25 Jun 17h
       '2026-06-14T14:00:00', // ger-cur: 14 Jun 14h
       '2026-06-14T20:00:00'],// ecu-civ: 14 Jun 20h
-  // Grupo F: [ned-jpn, tun-ukr, ned-tun, jpn-ukr, ned-ukr, jpn-tun]
+  // Grupo F: [ned-jpn, tun-sue, ned-tun, jpn-sue, ned-sue, jpn-tun]
   F: ['2026-06-14T17:00:00', // ned-jpn: 14 Jun 17h
       '2026-06-14T23:00:00', // tun-ukr: 14 Jun 23h
       '2026-06-25T20:00:00', // ned-tun: 25 Jun 20h
@@ -1775,7 +1775,7 @@ const CHAMP_PROBS = {
   col: 1.2, nor: 0.9, cro: 0.8, mex: 0.6, usa: 0.5, aus: 0.4,
   sen: 0.4, kor: 0.3, sui: 0.3, aut: 0.3, alg: 0.2, uzb: 0.1,
   can: 0.4, irn: 0.2, egy: 0.2, bih: 0.1, qat: 0.05, ecu: 0.3,
-  civ: 0.2, ukr: 0.2, tun: 0.1, ksa: 0.1, cpv: 0.02, gha: 0.1,
+  civ: 0.2, sue: 0.2, tun: 0.1, ksa: 0.1, cpv: 0.02, gha: 0.1,
   pan: 0.05, par: 0.1, rsa: 0.08, cze: 0.1, nzl: 0.03, irq: 0.02,
   jor: 0.02, cod: 0.02, hai: 0.01, tur: 0.15, cur: 0.01
 };
@@ -2397,7 +2397,7 @@ async function syncPredictionsToFirebase() {
   const username = getUsername();
   if (!fbUrl || !username) return;
 
-  const safeKey = username.replace(/[.#$[\]]/g, '_');
+  const safeKey = toSafeKey(username);
   const payload = {
     name: username,
     scores: scores,
@@ -2960,6 +2960,9 @@ function init() {
   if (savedName && session) {
     updateUserChip(savedName);
     setAdminTabVisible(toSafeKey(savedName) === toSafeKey(BOLAO_ADMIN_USER));
+    if (toSafeKey(savedName) !== toSafeKey(BOLAO_ADMIN_USER)) {
+      loadPredictionsFromFirebase();
+    }
   } else {
     localStorage.removeItem('bolao_username');
     localStorage.removeItem('bolao_session');
