@@ -625,6 +625,7 @@
       <button class="nav-tab admin-tab" id="admin-nav-tab" onclick="showSection('admin')" style="display:none">🔧 Admin</button>
     </nav>
     <div style="display:flex;align-items:center;gap:8px">
+      <a href="Copa/strikebet_copa2026.html" title="Abrir StrikeBet" style="display:inline-flex;align-items:center;gap:5px;background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.22);color:#22c55e;font-size:11px;font-weight:700;padding:5px 11px;border-radius:14px;text-decoration:none;white-space:nowrap;transition:background .15s;" onmouseover="this.style.background='rgba(0,230,118,0.15)'" onmouseout="this.style.background='rgba(0,230,118,0.07)'">⚡ StrikeBet</a>
       <div class="user-chip-wrap">
         <button class="user-chip" id="user-chip-btn" onclick="toggleUserMenu()">
           <span id="user-chip-icon">👤</span>
@@ -3059,6 +3060,41 @@ Forças, fraquezas, histórico recente e rota provável no torneio. 3 parágrafo
 }
 
 // =====================================================================
+// LOCK ALERTS
+// =====================================================================
+const _lockNotified = new Set();
+
+function checkUpcomingLocks() {
+  if (!getUsername()) return;
+  const now = new Date();
+  const oneHour = 60 * 60 * 1000;
+  for (const [group, dates] of Object.entries(GROUP_LOCK_DATES)) {
+    const data = GROUPS[group];
+    dates.forEach((dateStr, mi) => {
+      const lockTime = new Date(dateStr);
+      const diff = lockTime - now;
+      if (diff <= 0 || diff > oneHour) return;
+      const m = data.matches[mi];
+      const t1 = data.teams.find(t => t.id === m[0]);
+      const t2 = data.teams.find(t => t.id === m[1]);
+      if (!t1 || !t2) return;
+      const key = `${group}_${m[0]}v${m[1]}`;
+      const hasPred = scores[key] && scores[key].g1 !== null && scores[key].g1 !== undefined
+                                   && scores[key].g2 !== null && scores[key].g2 !== undefined;
+      if (hasPred) return;
+      const notifKey = `${key}_${lockTime.toISOString()}`;
+      if (_lockNotified.has(notifKey)) return;
+      _lockNotified.add(notifKey);
+      const mins = Math.round(diff / 60000);
+      notify(
+        `⏰ <strong>${t1.flag} ${t1.name} × ${t2.name} ${t2.flag}</strong> — fecha em <strong>${mins} min</strong>! Faça seu palpite.`,
+        'gold', 9000
+      );
+    });
+  }
+}
+
+// =====================================================================
 // INIT
 // =====================================================================
 function init() {
@@ -3071,6 +3107,8 @@ function init() {
 
   // 3. Re-verifica locks a cada 60s (app pode ficar aberto além do horário)
   setInterval(renderGroupsPreservingExpanded, 60000);
+  checkUpcomingLocks();
+  setInterval(checkUpcomingLocks, 60000);
 
   renderGroups();
   calcAllStandings();
